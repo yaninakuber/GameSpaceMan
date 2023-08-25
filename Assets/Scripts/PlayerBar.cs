@@ -31,7 +31,7 @@ public class PlayerBar : MonoBehaviour
                 slider.maxValue = PlayerController.MAX_HEALTH; //Al querer acceder a una constante no necesito instanciar al player con el find, simplemente puedo acceder
                 break;
             case BarType.manaBar:
-                slider.maxValue = PlayerController.MAX_MANA;
+                slider.maxValue = PlayerController.MAX_HEALTH;
                 break;
         }
     }
@@ -46,7 +46,7 @@ public class PlayerBar : MonoBehaviour
                 slider.value = GameObject.Find("Player").GetComponent<PlayerController>().GetHealth(); // Aqui si necesito instanciar para llegar al elem por no ser un singleton ni const
                 break;
             case BarType.manaBar:
-                slider.value = GameObject.Find("Player").GetComponent<PlayerController>().GetMana(); // me devuelve el valor actualizado constantemente y se lo entrego al valor de la barra
+                slider.value = GameObject.Find("Player").GetComponent<PlayerController>().GetHealth(); // me devuelve el valor actualizado constantemente y se lo entrego al valor de la barra
                 break; 
         }
 
