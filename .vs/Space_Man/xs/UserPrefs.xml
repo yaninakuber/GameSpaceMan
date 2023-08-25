@@ -1,0 +1,46 @@
+﻿<Properties StartupConfiguration="{39AD9B2C-0732-AB21-D492-1B09B6EBE20D}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Enemy.cs">
+    <Files>
+      <File FileName="Assets/Scripts/PlayerController.cs" Line="214" Column="35" />
+      <File FileName="Assets/Scripts/GameManager.cs" Line="88" Column="36" />
+      <File FileName="Assets/Scripts/KillZone.cs" Line="17" Column="1" />
+      <File FileName="Assets/Scripts/LevelBlock.cs" Line="20" Column="1" />
+      <File FileName="Assets/Scripts/LevelManager.cs" Line="35" Column="1" />
+      <File FileName="Assets/Scripts/ExitZone.cs" Line="17" Column="1" />
+      <File FileName="Assets/Scripts/CameraFollow.cs" Line="45" Column="1" />
+      <File FileName="Assets/Scripts/GameView.cs" Line="40" Column="1" />
+      <File FileName="Assets/Scripts/Collectable.cs" Line="64" Column="23" />
+      <File FileName="Assets/Scripts/MenuManager.cs" Line="11" Column="34" />
+      <File FileName="Assets/Scripts/PlayerBar.cs" Line="55" Column="1" />
+      <File FileName="Assets/Scripts/MovingPlatform.cs" Line="32" Column="46" />
+      <File FileName="Assets/Scripts/Enemy.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Space_Man" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="Enemy.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>allTheLevelBlock.count</Value>
+          <Value>currenteLevelBlock</Value>
+          <Value>IsTouchingTheMask</Value>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="b8badd65-b608-4b07-8d9b-3713942a7071" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
