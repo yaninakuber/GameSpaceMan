@@ -7,46 +7,80 @@ public class GameView : MonoBehaviour
 {
     public Text coinText, scoreText, maxScoreText;
 
-    private PlayerController controller;
+    private PlayerController playerController;
 
-    private const int POINTS_PER_COIN = 50; // Valor de puntos por moneda
+    private const int POINTS_PER_COIN = 50;
 
 
     void Start()
     {
-        controller = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        
     }
 
 
-    void Update() 
+    void Update()
     {
-        if(GameManager.sharedInstance.currentGameState == GameState.inGame)//si estoy jugando quiero actualizar tod el tiempo el puntaje
+        int coins = GameManager.sharedInstance.collectedObject;
+
+        float distanceScore = playerController.GetTravelledDistance();
+        int coinScore = CalculateScore(coins, POINTS_PER_COIN);
+        float totalScore = CalculateTotalScore(distanceScore, coinScore);
+        float maxScore = GetMaxScore();
+
+
+        if (playerController.IsInGame())
         {
-            int coins = GameManager.sharedInstance.collectedObject; 
-            float distanceScore = controller.GetTravelledDistance(); // se los voy a pasar de acuerdo a la distancia recorrida por eso float
-            int coinScore = coins * POINTS_PER_COIN; // Puntos por monedas recolectadas
-            float totalScore = distanceScore + coinScore; // Total de puntos
-
-            float maxScore = PlayerPrefs.GetFloat("maxScore", 0f);
-
             if (coinText != null)
             {
                 coinText.text = coins.ToString(); // resuele bug q indicaba valor nulo en la variabe
             }
-            scoreText.text = "Score: " + totalScore.ToString("f1");
-            maxScoreText.text = "Max. Score: " + maxScore.ToString("f1"); // con un decimal
+            scoreText.text = AssignScoreText("Score; ", totalScore); 
+            maxScoreText.text = AssignScoreText("Max. Score; ", maxScore);
 
         }
 
-        if(GameManager.sharedInstance.currentGameState == GameState.gameOver)
+        if (GameManager.sharedInstance.currentGameState == GameState.gameOver)
         {
-            float distanceScore = controller.GetTravelledDistance(); // Puntos por distancia
-            int coinScore = GameManager.sharedInstance.collectedObject * POINTS_PER_COIN; // Puntos por monedas recolectadas
-            float totalScore = distanceScore + coinScore; // Total de puntos
-            float maxScore = PlayerPrefs.GetFloat("maxScore", 0f);
+            if (totalScore > maxScore)
+            {
+                maxScore = totalScore;
+                PlayerPrefs.SetFloat("maxScore", maxScore); // Almacenamos el nuevo maxScore en PlayerPrefs
+            }
 
-            scoreText.text = "Your Score: " + totalScore.ToString("f1");
-            maxScoreText.text = "Max. Score: " + maxScore.ToString("f1"); // con un decimal
+
+            scoreText.text = AssignScoreText("Your Score; ", totalScore);
+            maxScoreText.text = AssignScoreText("Max. Score; ", maxScore);
         }
+
+
     }
+
+    int CalculateScore(int values, int pointPerUnit)
+    {
+        return values * pointPerUnit;
+    }
+
+    float CalculateTotalScore(float distanceScore, int coinScore)
+    {
+        return distanceScore + coinScore;
+    }
+
+    float GetMaxScore()
+    {
+        return PlayerPrefs.GetFloat("maxScore", 0f);
+    }
+
+    string AssignScoreText(string texto, float score)
+    {
+        return texto + ConvertFloatToString(score);
+    }
+
+    string ConvertFloatToString(float number)
+    {
+        return number.ToString("f1");
+    }
+
 }
+
+

@@ -68,11 +68,15 @@ public class PlayerController : MonoBehaviour
         ReactivatePlayer();
         playerAnimator.SetBool(STATE_ALIVE, true);
         playerAnimator.SetBool(STATE_ON_THE_GROUND, false);
+        
     }
     private void InitizalizePoints()
     {
         healthPoints = INITIAL_HEALTH;
+        maxDistanceScore = 0f;
+        GameManager.sharedInstance.RestartCollectableObject();
     }
+
     private void ReactivatePlayer()
     {
         this.gameObject.SetActive(true);
@@ -236,23 +240,16 @@ public class PlayerController : MonoBehaviour
         return Physics2D.Raycast(this.transform.position, Vector2.down, 2f, groundMask);
     }
 
+
     public void Die()
     {
-        UpdateMaxScore();
         SetPlayerAnimatorParametersOnDeath();
 
         GameManager.sharedInstance.GameOver();
     }
 
-    private void UpdateMaxScore()
-    {
-        float travelledDistance = GetTravelledDistance();
-        float previousMaxDistance = PlayerPrefs.GetFloat("maxScore", 0f); 
-        if (travelledDistance > previousMaxDistance) 
-        {
-            PlayerPrefs.SetFloat("maxScore", travelledDistance); 
-        }
-    }
+
+    
 
     private void SetPlayerAnimatorParametersOnDeath()
     {
@@ -262,18 +259,21 @@ public class PlayerController : MonoBehaviour
 
     public float GetTravelledDistance()
     {
-        if (!IsInGame())
+        if (IsInGame())// para evitar que tome la distancia en el game over
         {
-            return maxDistanceScore;
+            float distance = this.transform.position.x - startPosition.x; // a que distancia me hayo - el punto inicial = total de espacio recorrido en la dimension x
+            if (distance > maxDistanceScore)
+            { // solo se incrementa si la distancia actual es mayor que la maxima registrada
+                maxDistanceScore = distance;
+            }
         }
-
-        return Mathf.Max(transform.position.x - startPosition.x, maxDistanceScore);
+        return maxDistanceScore;
     }
 
     public void CollectHealth(int points)
     {
-        this.healthPoints += points;
         ClampHealthPoints();
+        this.healthPoints += points;
 
         if(healthPoints <= 0) 
         {
@@ -319,7 +319,6 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerWin()
     {   
-        UpdateMaxScore();
         GameManager.sharedInstance.WinGame(); 
     }
 

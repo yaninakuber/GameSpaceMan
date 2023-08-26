@@ -106,6 +106,7 @@ public class GameManager : MonoBehaviour
         LevelManager.sharedInstance.GenerationBlocks();
         playerController.StartGame();
 
+
         MenuManager.sharedInstance.ShowGameCanvas();
 
     }
@@ -118,6 +119,11 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SetGameState(GameState.inGame);
+    }
+
+    public void RestartCollectableObject()
+    {
+        collectedObject = 0;
     }
 
 }
