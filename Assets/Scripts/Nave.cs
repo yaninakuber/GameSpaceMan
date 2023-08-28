@@ -4,32 +4,43 @@ using UnityEngine;
 
 public class Nave : MonoBehaviour
 {
-    public GameObject objectToMove; // Objeto a mover
+    public GameObject objectToMove;
     public Transform startPoint;
     public Transform endPoint;
     public float velocity;
 
-    private bool isMovingUp = false;
-    private bool isReturning = false;
     private Vector3 initialPosition;
 
     private PlayerController controller;
 
+    private enum MovementState
+    {
+        Idle,
+        MovingUp,
+        Returning
+    }
+
+    private MovementState movementState = MovementState.Idle;
+
     private void Start()
     {
-        controller = GameObject.Find("Player").GetComponent<PlayerController>(); // Obtiene una referencia al controlador del jugador
-        initialPosition = objectToMove.transform.position; // Almacena la posición inicial del objeto
+        controller = GameObject.Find("Player").GetComponent<PlayerController>();
+        initialPosition = objectToMove.transform.position;
     }
 
     private void Update()
     {
-        if (isMovingUp)
+        switch (movementState)
         {
-            MoveObjectUp();  // Si está en movimiento hacia arriba, llama a la función correspondiente
-        }
-        else if (isReturning)
-        {
-            ReturnToObjectStart(); // Si está regresando a la posición inicial, llama a la función correspondiente
+            case MovementState.MovingUp:
+                MoveObjectTowards(endPoint.position);
+                CheckForMovementCompletion(endPoint.position, MovementState.Returning);
+                break;
+
+            case MovementState.Returning:
+                MoveObjectTowards(initialPosition);
+                CheckForMovementCompletion(initialPosition, MovementState.Idle);
+                break;
         }
     }
 
@@ -37,76 +48,53 @@ public class Nave : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isMovingUp = true; // Comienza a mover el objeto hacia arriba
-            collision.gameObject.SetActive(false); // Desactiva al jugador
-            StartCoroutine(WaitForWin()); // Inicia una corrutina para esperar y luego llamar al método ganador del jugador
+           HandlePlayerCollision(collision.gameObject);
         }
+    }
+
+    private void HandlePlayerCollision(GameObject player)
+    {
+        StartMovingUp();
+        DesactivatePlayer(player);
+        StartCoroutine(WaitForWin());
+    }
+
+
+    private void StartMovingUp()
+    {
+        movementState = MovementState.MovingUp;
+    }
+
+    private void DesactivatePlayer(GameObject player)
+    {
+        player.SetActive(false);
     }
 
     private IEnumerator WaitForWin()
     {
-        yield return new WaitForSeconds(3f); // Espera 3 segundos
-        controller.PlayerWin(); // Llama al método ganador
+        yield return new WaitForSeconds(3f);
+        controller.PlayerWin();
     }
 
-    private void MoveObjectUp()
-    {
-        objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, endPoint.position, velocity * Time.deltaTime);
 
-        if (objectToMove.transform.position == endPoint.position) // da la vuelta
-        {
-            isMovingUp = false; // Detiene el movimiento hacia arriba
-            isReturning = true; // Comienza a regresar
-        }
+
+    private void MoveObjectTowards(Vector3 targetPosition)
+    {
+        objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, targetPosition, velocity * Time.deltaTime);
     }
 
-    private void ReturnToObjectStart()
+    private void CheckForMovementCompletion(Vector3 targetPosition, MovementState nextState)
     {
-        objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, initialPosition, velocity * Time.deltaTime);
-
-        if (objectToMove.transform.position == initialPosition)
+        if (objectToMove.transform.position == targetPosition)
         {
-            isReturning = false; // Detiene el regreso
+            movementState = nextState;
         }
     }
 }
 
-/*
-private Animator animator;
-private PlayerController controller;
-
-private Vector3 startPosition;
-
-
-// Start is called before the first frame update
-void Start()
-{
-    controller = GameObject.Find("Player").GetComponent<PlayerController>();
-    startPosition = this.transform.position; //guardo en la variable la posicion en la que inicio 
-
-    animator = GetComponent<Animator>();// Obtener la referencia al Animator
-    animator.enabled = false; // me aseguro que este desactivada
-}
-
-private IEnumerator WaitForWin()
-{
-    yield return new WaitForSeconds(3f); // espera 3 segundos
-    controller.PlayerWin(); //llama al metodo ganador
-}
+ 
 
 
 
-private void OnTriggerEnter2D(Collider2D collision)
-{
-    if (collision.CompareTag("Player"))
-    {
-        animator.enabled = true;
-        animator.Play("Nave 1");
 
-        // Desactivar al jugador
-        collision.gameObject.SetActive(false);
-
-        StartCoroutine(WaitForWin());
-    }
-}*/
 
