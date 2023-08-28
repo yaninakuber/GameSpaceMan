@@ -64,14 +64,14 @@ public class GameManager : MonoBehaviour
 
     void SetGameState(GameState newGameState)
     {
-        HideMenu();
-        ActivateGameStateCases(newGameState);
+        HideAllMenues();
+        ActivateMenuGameStateCases(newGameState);
 
         this.currentGameState = newGameState;
 
     }
 
-    void HideMenu()
+    void HideAllMenues()
     {
         MenuManager.sharedInstance.HideGameCanvas();
         MenuManager.sharedInstance.HideMainMenu();
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         MenuManager.sharedInstance.HideGameWinCanvas();
     }
 
-    void ActivateGameStateCases(GameState newGameState)
+    void ActivateMenuGameStateCases(GameState newGameState)
     {
         switch (newGameState)
         {
@@ -105,7 +105,6 @@ public class GameManager : MonoBehaviour
         LevelManager.sharedInstance.GenerateInitialBlock();
         LevelManager.sharedInstance.GenerationBlocks();
         playerController.StartGame();
-
 
         MenuManager.sharedInstance.ShowGameCanvas();
 

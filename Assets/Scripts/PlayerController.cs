@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    
-    public Sprite spriteIdle;
+    [Header("Movement")]
     public float jumpForce = 10f;
     public float walkingSpeed = 2f;
+    public LayerMask groundMask;
 
     Rigidbody2D playerRigiBody;
     Animator playerAnimator;
+    public Sprite spriteIdle;
 
     Vector3 startPosition; 
 
     const string STATE_ALIVE = "IsAlive";
     const string STATE_ON_THE_GROUND = "IsOnTheGround";
 
-    public LayerMask groundMask; 
-
 
     [SerializeField] private int healthPoints, manaPoints;
-
     public const int INITIAL_HEALTH = 100,
                      MAX_HEALTH = 200,
                      MIN_HEALTH = 10;
@@ -45,18 +43,28 @@ public class PlayerController : MonoBehaviour
     {
         InitializePlayer();
     }
+
     private void InitializePlayer()
     {
-        playerAnimator.enabled = false;
+        DesactivatePlayerAnimator();
         startPosition = this.transform.position; 
     }
 
+    void ActivatePlayerAnimator()
+    {
+        playerAnimator.enabled = true;
+    }
+
+    void DesactivatePlayerAnimator()
+    {
+        playerAnimator.enabled = false;
+    }
 
     public void StartGame()
     {
         InitializePlayerState();
 
-        ReStartPosition();
+        ResetPlayer();
         playerAnimator.Play("Walk");
 
         InitizalizePoints();
@@ -66,9 +74,8 @@ public class PlayerController : MonoBehaviour
     private void InitializePlayerState()
     {
         ReactivatePlayer();
-        playerAnimator.SetBool(STATE_ALIVE, true);
-        playerAnimator.SetBool(STATE_ON_THE_GROUND, false);
-        
+        SetAnimatorState(STATE_ALIVE, true);
+        SetAnimatorState(STATE_ON_THE_GROUND, false);
     }
     private void InitizalizePoints()
     {
@@ -82,8 +89,12 @@ public class PlayerController : MonoBehaviour
         this.gameObject.SetActive(true);
     }
 
+    private void SetAnimatorState(string stateName, bool value)
+    {
+        playerAnimator.SetBool(stateName, value);
+    }
 
-    void ReStartPosition()
+    void ResetPlayer()
     {
         ResetPlayerPosition();
         ResetPlayerVelocity();
@@ -108,7 +119,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
-        if (Input.GetButtonDown("Jump") && IsInGame())
+        if (Input.GetButtonDown("Jump") && CheckGameState(GameState.inGame))
         {
             ActivatePlayerAnimator();
             GetComponent<AudioSource>().Play();
@@ -139,19 +150,11 @@ public class PlayerController : MonoBehaviour
         playerRigiBody.GetComponent<SpriteRenderer>().sprite = spriteIdle;
     }
 
-    void ActivatePlayerAnimator()
-    {
-        playerAnimator.enabled = true;
-    }
 
-    void DesactivatePlayerAnimator()
-    {
-        playerAnimator.enabled = false;
-    }
 
-    public bool IsInGame()
+    public bool CheckGameState(GameState targetState)
     {
-        return GameManager.sharedInstance.currentGameState == GameState.inGame;
+        return GameManager.sharedInstance.currentGameState == targetState;
     }
 
     void FixedUpdate()
@@ -161,7 +164,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckPosibilityOfMovement()
     {
-        if (IsInGame())
+        if (CheckGameState(GameState.inGame))
         {
             Move();
         }
@@ -223,8 +226,6 @@ public class PlayerController : MonoBehaviour
         return Input.GetButtonDown("Jump");
     }
 
-
-
     void Jump()
     {
         if (IsTouchingTheMask()) 
@@ -249,17 +250,16 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    
-
+   
     private void SetPlayerAnimatorParametersOnDeath()
     {
-        playerAnimator.SetBool(STATE_ALIVE, false);
-        playerAnimator.SetBool(STATE_ON_THE_GROUND, false);
+        SetAnimatorState(STATE_ALIVE, false);
+        SetAnimatorState(STATE_ON_THE_GROUND, false);
     }
 
     public float GetTravelledDistance()
     {
-        if (IsInGame())// para evitar que tome la distancia en el game over
+        if (CheckGameState(GameState.inGame))// para evitar que tome la distancia en el game over
         {
             float distance = this.transform.position.x - startPosition.x; // a que distancia me hayo - el punto inicial = total de espacio recorrido en la dimension x
             if (distance > maxDistanceScore)
