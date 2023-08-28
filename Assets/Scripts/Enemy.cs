@@ -6,119 +6,138 @@ public class Enemy : MonoBehaviour
 {
 
     public float velocityEnemy = 1.5f;
-    public float jumpForce = 1f; // Fuerza de salto al chocar con el enemigo
-    public float colorChangeDuration = 0.2f; // Duración del cambio de color en segundos
+    public float playerJumpForceOnDeath =5f; 
+    public float playerColorChangeDurationOnCollision = 0.2f; 
 
 
     Rigidbody2D enemyRigidBody;
 
     public bool facingRight = false; // para saber donde esta mirando el enemigo, como esta para la izq. la inicializamos en false
-    public int enemyDamage = 10;// daño al enemigo
+    public int enemyDamage = 10;
 
     private Vector3 startPosition; // para resetear la posicion del enemigo a la original cuando lo reutilizo
 
-    private SpriteRenderer enemySpriteRenderer; //// Agrega esta variable para acceder al SpriteRenderer del enemigo
+    private SpriteRenderer enemySpriteRenderer;
 
+    private PlayerController playerController;
 
     private void Awake()
     {
         enemyRigidBody = GetComponent<Rigidbody2D>();
-        startPosition = this.transform.position; // asi se donde arranca exactamente al comienzo
+        startPosition = this.transform.position;
 
-        enemySpriteRenderer = GetComponent<SpriteRenderer>();// Inicializa el SpriteRenderer
+        enemySpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
     void Start()
     {
-        this.transform.position = startPosition; //para que cada vez que arranque vuelva a la posicion inicial
+        this.transform.position = startPosition; 
     }
 
 
     private void FixedUpdate()
     {
-        float currentVelocityEnemy = velocityEnemy; 
-
-        if (facingRight)//siempre vamos a velocidad fija dependiendo del sentido
-        {
-            currentVelocityEnemy = velocityEnemy;//Mirando a la derecha, velocidad positiva
-            this.transform.eulerAngles = new Vector3(0, 180, 0); // rota 180 grados con respecto a la pocision inicial
-        }
-        else
-        {
-            currentVelocityEnemy = -velocityEnemy;//Mirando a la izq, velocidad negativa
-            this.transform.eulerAngles = Vector3.zero; // vuelve a la posicion original
-        }
-
-        if(GameManager.sharedInstance.currentGameState == GameState.inGame) // en el caso de estar en el juego, para que no se mueva en menu o en game over 
-        {
-            enemyRigidBody.velocity = new Vector2(currentVelocityEnemy, enemyRigidBody.velocity.y); // genero velocidad de acuerdo a lo calculado anteriormente en x y en y cero pero lo ponemos asi
-        }
-        else
-        {
-            enemyRigidBody.velocity = Vector2.zero; 
-        }
-
+        UpdateDirectionEnemy();
     }
 
-
-    private void OnTriggerEnter2D(Collider2D collision) // para que sea llamado cuando el enemy entra en collision con otro collider
+    void UpdateDirectionEnemy()
     {
-        if(collision.tag == "Coin" || collision.tag == "ExitZone" || collision.tag == "Potion")
-        {
-            return;
-        }
-        if (collision.tag == "Player")
-        {
-            GetComponent<AudioSource>().Play();
-            collision.gameObject.GetComponent<PlayerController>().CollectHealth(-enemyDamage);// localizo al player controller, le paso valor negativo para que reste a la vida
+        float currentVelocityEnemy = CalculateCurrentVelocity();
+        float rotationY = facingRight ? 180 : 0;
 
-            // Cambiar el color del jugador temporalmente y luego revertirlo
-            StartCoroutine(ChangePlayerColorAndRevert(collision.gameObject));
-
-            // Agregar la lógica para hacer que el jugador salte aquí
-            Rigidbody2D playerRigidbody = collision.gameObject.GetComponent<Rigidbody2D>();
-            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, jumpForce);
-
-            return;
-        }
-        // si llego hasta aca no choque ni con monedas ni con player
-        // Lo mas normal es que aqui haya otro enemigo o el escenario
-        //vamos a hacer que el enemigo rote
-        facingRight = !facingRight; //lo contrario
+        SetFacingDirection(rotationY);
+        UpdateEnemyVelocity(currentVelocityEnemy);
     }
+
+    float CalculateCurrentVelocity()
+    {
+        return facingRight ? velocityEnemy : -velocityEnemy;
+    }
+
+    void SetFacingDirection(float rotationY)
+    {
+        this.transform.eulerAngles = new Vector3(0, rotationY, 0);
+    }
+
+    void UpdateEnemyVelocity(float currentVelocity)
+    {
+        enemyRigidBody.velocity = GameManager.sharedInstance.currentGameState == GameState.inGame
+                                  ? new Vector2(currentVelocity, enemyRigidBody.velocity.y)
+                                  : Vector2.zero;
+    }
+
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Coin" || collision.tag == "ExitZone" || collision.tag == "Potion")
+        {
+            return;
+        }
+        if (collision.CompareTag("Player"))
+        {
+            HandlePlayerCollision(collision.gameObject);
+        }
+        else
+        {
+            RotateEnemy();
+        }
+    }
+
+    void HandlePlayerCollision(GameObject player)
+    {
+        GetComponent<AudioSource>().Play();
+
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        playerController.CollectHealth(-enemyDamage);
+        
+        StartCoroutine(ChangePlayerColorAndRevert(player));
+        
+        MakePlayerJump(player);
+    }
+
+    void MakePlayerJump(GameObject player)
+    {
+        Rigidbody2D playerRigidbody = player.GetComponent<Rigidbody2D>();
+        playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, playerJumpForceOnDeath);
+    }
+
+    void RotateEnemy()
+    {
+        facingRight = !facingRight;
+    }
+
 
     private IEnumerator ChangePlayerColorAndRevert(GameObject player)
     {
-        // Cambiar el color del jugador a uno temporal (por ejemplo, rojo)
         Color originalColor = player.GetComponent<SpriteRenderer>().color;
-        Color newColor = new Color(1f, 0.7f, 0.7f); // Rojo más claro
-        player.GetComponent<SpriteRenderer>().color = newColor;
+        Color temporaryColor = new Color(1f, 0.7f, 0.7f); // Rojo más claro
 
-        // Esperar durante unos segundos
-        yield return new WaitForSeconds(colorChangeDuration);
+        SetPlayerColor(player, temporaryColor);
 
-        // Revertir el color original del jugador
-        player.GetComponent<SpriteRenderer>().color = originalColor;
+        yield return new WaitForSeconds(playerColorChangeDurationOnCollision);
 
-        // Agregamos la llamada a la corrutina para revertir el color nuevamente después de un tiempo
-        StartCoroutine(RevertPlayerColor(player));
+        SetPlayerColor(player, originalColor);
+
+        StartCoroutine(RevertPlayerColor(player)); // Agregamos la llamada a la corrutina para revertir el color nuevamente después de un tiempo
     }
 
-
-
+    void SetPlayerColor(GameObject player, Color color)
+    {
+        player.GetComponent<SpriteRenderer>().color = color;
+    }
 
     private IEnumerator RevertPlayerColor(GameObject player)
     {
         Color originalColor = player.GetComponent<SpriteRenderer>().color; //guardamos el color original
-        Color newColor = new Color(1f, 1f, 1f); // Color blanco (color original)
+        Color defaultColor = Color.white; 
+        
         float elapsedTime = 0f;
-
-        while (elapsedTime < colorChangeDuration) // mientras el tiempo transcurrido sea menor que la duracion deseada para el cambio de color. Garantiza que el cambio de color se realice gradualmente. 
+        while (elapsedTime < playerColorChangeDurationOnCollision) // mientras el tiempo transcurrido sea menor que la duracion deseada para el cambio de color. Garantiza que el cambio de color se realice gradualmente. 
         {
             elapsedTime += Time.deltaTime;
-            float t = elapsedTime / colorChangeDuration; //calculo de progreso
-            player.GetComponent<SpriteRenderer>().color = Color.Lerp(originalColor, newColor, t); //color lerp inerpola suavemente entre el color original y el nuevo color 
+            float t = elapsedTime / playerColorChangeDurationOnCollision; //calculo de progreso
+            SetPlayerColor(player, Color.Lerp(originalColor, defaultColor, t)); //color lerp inerpola suavemente entre el color original y el nuevo color 
             yield return null; //retornamos a la corruntina. 
         }
     }

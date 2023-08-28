@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
     {
         LevelManager.sharedInstance.RemoveAllLevelBlock();
         LevelManager.sharedInstance.GenerateInitialBlock();
-        LevelManager.sharedInstance.GenerationBlocks();
+        LevelManager.sharedInstance.GenerateBlocks();
         playerController.StartGame();
 
         MenuManager.sharedInstance.ShowGameCanvas();
