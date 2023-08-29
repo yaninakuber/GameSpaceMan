@@ -569,7 +569,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   SpriteIdle: {fileID: 591193018, guid: dd640f3f2e6ea4345bfbe7b34c066ca6, type: 3}
-  _healthPoints: 50
+  healthPoints: 0
   _manaPoints: 0
   MaxDistanceScore: 0
 --- !u!82 &272174611
@@ -1890,7 +1890,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3e5b66e59dbb2479591e646855459232, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.328
+  m_Volume: 0.197
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -3677,9 +3677,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f27fe001b172494784b956f70f2c1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinText: {fileID: 0}
-  scoreText: {fileID: 434126249}
-  maxScoreText: {fileID: 556790865}
+  CoinText: {fileID: 0}
+  ScoreText: {fileID: 434126249}
+  MaxScoreText: {fileID: 556790865}
 --- !u!1 &1394045970
 GameObject:
   m_ObjectHideFlags: 0
@@ -4069,9 +4069,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f27fe001b172494784b956f70f2c1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinText: {fileID: 1985335058}
-  scoreText: {fileID: 796879670}
-  maxScoreText: {fileID: 1043760879}
+  CoinText: {fileID: 1985335058}
+  ScoreText: {fileID: 796879670}
+  MaxScoreText: {fileID: 1043760879}
 --- !u!1 &1736877497
 GameObject:
   m_ObjectHideFlags: 0
@@ -4215,9 +4215,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f27fe001b172494784b956f70f2c1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinText: {fileID: 0}
-  scoreText: {fileID: 1812287761}
-  maxScoreText: {fileID: 1485427208}
+  CoinText: {fileID: 0}
+  ScoreText: {fileID: 1812287761}
+  MaxScoreText: {fileID: 1485427208}
 --- !u!114 &1747143438
 MonoBehaviour:
   m_ObjectHideFlags: 0

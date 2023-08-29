@@ -17,8 +17,6 @@ public class Collectable : MonoBehaviour
     private SpriteRenderer _sprite; 
     private CircleCollider2D _itemCollider; 
 
-    bool hasBeenCollected = false; // no se usa  
-
     private const int POINTS_PER_COINS = 50;
 
     GameObject player;
@@ -34,43 +32,43 @@ public class Collectable : MonoBehaviour
         player = GameObject.Find("Player");
     }
 
-    private void _HideCollectable() 
+    private void HideCollectable() 
     {
         _sprite.enabled = false;
         _itemCollider.enabled = false;
     }
 
-    private void _CollectMoney()
+    private void CollectMoney()
     {
         GameManager.SharedInstance.CollectableObject(this); //deberia estar aca la funcion
         GetComponent<AudioSource>().Play();
         player.GetComponent<PlayerController>().CollectPoints(POINTS_PER_COINS);
     }
 
-    private void _CollectHealthPotion()
+    private void CollectHealthPotion()
     {
         player.GetComponent<PlayerController>().CollectHealth(this.ValueCoin); //deberia estar aca
     }
 
-    private void _CollectDiedPotion()
+    private void CollectDiedPotion()
     {
         player.GetComponent<PlayerController>().CollectDie();
     }
 
-    private void _Collect()
+    private void Collect()
     {
-        _HideCollectable();
+        HideCollectable();
 
         switch (TypeCollectable) //cambiar TypeCollectable
         {
             case CollectableType.Money:
-                _CollectMoney();
+                CollectMoney();
                 break;
             case CollectableType.HealthPotion:
-                _CollectHealthPotion();
+                CollectHealthPotion();
                 break;
             case CollectableType.DiedPotion:
-                _CollectDiedPotion();
+                CollectDiedPotion();
                 break;
         }
     }
@@ -79,7 +77,7 @@ public class Collectable : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            _Collect();
+            Collect();
         }
     }
 }

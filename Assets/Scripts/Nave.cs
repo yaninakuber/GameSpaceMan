@@ -20,7 +20,7 @@ public class Nave : MonoBehaviour
         Returning
     }
 
-    private MovementState _movementState = MovementState.Idle; 
+    private MovementState movementState = MovementState.Idle; 
 
     private void Start()
     {
@@ -30,16 +30,16 @@ public class Nave : MonoBehaviour
 
     private void Update()
     {
-        switch (_movementState)
+        switch (movementState)
         {
             case MovementState.MovingUp:
-                _MoveObjectTowards(EndPoint.position);
-                _CheckForMovementCompletion(EndPoint.position, MovementState.Returning);
+                MoveObjectTowards(EndPoint.position);
+                CheckForMovementCompletion(EndPoint.position, MovementState.Returning);
                 break;
 
             case MovementState.Returning:
-                _MoveObjectTowards(_initialPosition);
-                _CheckForMovementCompletion(_initialPosition, MovementState.Idle);
+                MoveObjectTowards(_initialPosition);
+                CheckForMovementCompletion(_initialPosition, MovementState.Idle);
                 break;
         }
     }
@@ -48,24 +48,24 @@ public class Nave : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-           _HandlePlayerCollision(collision.gameObject);
+           HandlePlayerCollision(collision.gameObject);
         }
     }
 
-    private void _HandlePlayerCollision(GameObject player)
+    private void HandlePlayerCollision(GameObject player)
     {
-        _StartMovingUp();
-        _DesactivatePlayer(player);
+        StartMovingUp();
+        DesactivatePlayer(player);
         StartCoroutine(_WaitForWin());
     }
 
 
-    private void _StartMovingUp()
+    private void StartMovingUp()
     {
-        _movementState = MovementState.MovingUp;
+        movementState = MovementState.MovingUp;
     }
 
-    private void _DesactivatePlayer(GameObject player)
+    private void DesactivatePlayer(GameObject player)
     {
         player.SetActive(false);
     }
@@ -78,16 +78,16 @@ public class Nave : MonoBehaviour
 
 
 
-    private void _MoveObjectTowards(Vector3 targetPosition)
+    private void MoveObjectTowards(Vector3 targetPosition)
     {
         ObjectToMove.transform.position = Vector3.MoveTowards(ObjectToMove.transform.position, targetPosition, Velocity * Time.deltaTime);
     }
 
-    private void _CheckForMovementCompletion(Vector3 targetPosition, MovementState nextState)
+    private void CheckForMovementCompletion(Vector3 targetPosition, MovementState nextState)
     {
         if (ObjectToMove.transform.position == targetPosition)
         {
-            _movementState = nextState;
+            movementState = nextState;
         }
     }
 }

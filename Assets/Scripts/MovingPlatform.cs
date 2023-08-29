@@ -25,34 +25,34 @@ public class MovingPlatform : MonoBehaviour
     {
         if (GameManager.SharedInstance.CurrentGameState == GameState.InGame)
         {
-            _MoveObject();
-            _CheckForMoventCompletion();
+            MoveObject();
+            CheckForMoventCompletion();
         }
     }
 
-    private void _MoveObject()
+    private void MoveObject()
     {
         ObjectToMove.transform.position = Vector3.MoveTowards(ObjectToMove.transform.position, _moveTowards, velocity * Time.deltaTime); //desde donde hacia donde
     }
-    private void _CheckForMoventCompletion()
+    private void CheckForMoventCompletion()
     {
-        if (_IsAtPosition(EndPoint.position))
+        if (IsAtPosition(EndPoint.position))
         {
-            _ChangeDirection(StartPoint.position);
+            ChangeDirection(StartPoint.position);
         }
 
-        if (_IsAtPosition(StartPoint.position))
+        if (IsAtPosition(StartPoint.position))
         {
-            _ChangeDirection(EndPoint.position);
+            ChangeDirection(EndPoint.position);
         }
     }
 
-    private bool _IsAtPosition(Vector3 position)
+    private bool IsAtPosition(Vector3 position)
     {
         return ObjectToMove.transform.position == position;
     }
 
-    private void _ChangeDirection(Vector3 newTarget)
+    private void ChangeDirection(Vector3 newTarget)
     {
         _moveTowards = newTarget;
     }

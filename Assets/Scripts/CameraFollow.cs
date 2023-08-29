@@ -16,78 +16,78 @@ public class CameraFollow : MonoBehaviour
     void Awake()
     {
         Application.targetFrameRate = 60;  // va a intentar ir a 60 frame x seg
-        _MoveCamera(true); // inicializa el movimiento suave
+        MoveCamera(true); // inicializa el movimiento suave
     }
 
     private void Update()
     {
         GameState gameState = GameManager.SharedInstance.CurrentGameState;
 
-        if(_IsInGameOrMenuState(gameState))
+        if(IsInGameOrMenuState(gameState))
         {
-            _HandleInGameOrMenuState();
+            HandleInGameOrMenuState();
         } 
         else if (IsGameOverOrWinState(gameState)) 
         {
-            _HandleGameOverOrWinState();
+            HandleGameOverOrWinState();
         }
     }
 
-    private bool _IsInGameOrMenuState(GameState state) => state == GameState.InGame || state == GameState.Menu;
+    private bool IsInGameOrMenuState(GameState state) => state == GameState.InGame || state == GameState.Menu;
 
     private bool IsGameOverOrWinState(GameState state) => state == GameState.GameOver || state == GameState.Win; 
     
 
-    private void _HandleInGameOrMenuState()
+    private void HandleInGameOrMenuState()
     {
         if (_isFirstMove)
         {
             _isFirstMove = false;
-            _MoveCamera(true);
+            MoveCamera(true);
         }
         else
         {
-            _MoveCamera(true);
+            MoveCamera(true);
             _isResettingCamera = false;
         }
     }
 
-    private void _HandleGameOverOrWinState() //dos diferentes estados 
+    private void HandleGameOverOrWinState() //dos diferentes estados 
     {
         if (!_isResettingCamera)
         {
-            Invoke("_ResetCameraPosition", 0.5f);
+            Invoke("ResetCameraPosition", 0.5f);
             _isResettingCamera = true;
         }
     }
 
     public void SmoothMoveCamera(bool smooth)
     {
-        Vector3 destination = smooth ? _CalculateSmoothDestination() : _CalculateResetDestination();
+        Vector3 destination = smooth ? CalculateSmoothDestination() : CalculateResetDestination();
         this.transform.position = destination;
     }
 
-    private Vector3 _CalculateSmoothDestination()
+    private Vector3 CalculateSmoothDestination()
     {
-        Vector3 _targetPosition = Target.position;
-        Vector3 _restrictedPosition = new Vector3(Mathf.Max(_targetPosition.x - Offset.x, this.transform.position.x), Offset.y, Offset.z);
+        Vector3 targetPosition = Target.position;
+        Vector3 restrictedPosition = new Vector3(Mathf.Max(targetPosition.x - Offset.x, this.transform.position.x), Offset.y, Offset.z);
         // destino que restringe mov de cam a la izquierda
         // dificil de leer
-        return Vector3.SmoothDamp(this.transform.position, _restrictedPosition, ref VelocityCam, DampingTime); // lo sigue lentamente 
+        return Vector3.SmoothDamp(this.transform.position, restrictedPosition, ref VelocityCam, DampingTime); // lo sigue lentamente 
     }
 
-    private void _ResetCameraPosition()
+    private void ResetCameraPosition()
     {
-        _MoveCamera(false); // un metodo hace dos cosas
+        MoveCamera(false); // un metodo hace dos cosas
     }
 
-    private void _MoveCamera(bool shouldSmooth)
+    private void MoveCamera(bool shouldSmooth)
     {
-        Vector3 destination = shouldSmooth ? _CalculateSmoothDestination() : _CalculateResetDestination();
+        Vector3 destination = shouldSmooth ? CalculateSmoothDestination() : CalculateResetDestination();
         this.transform.position = destination;
     }
 
-    private Vector3 _CalculateResetDestination()
+    private Vector3 CalculateResetDestination()
     {
         return new Vector3(Offset.x, Offset.y, Offset.z);
     }

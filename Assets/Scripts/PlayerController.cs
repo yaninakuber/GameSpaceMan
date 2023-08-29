@@ -11,29 +11,30 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D playerRigiBody;
     Animator playerAnimator;
+    
     public Sprite SpriteIdle;
 
-    Vector3 _startPosition; 
+    Vector3 startPosition; 
 
     const string STATE_ALIVE = "IsAlive";
     const string STATE_ON_THE_GROUND = "IsOnTheGround";
 
 
-    [SerializeField] private int _healthPoints, _manaPoints;
+    [SerializeField] private int healthPoints, _manaPoints;
     public const int INITIAL_HEALTH = 100,
                      MAX_HEALTH = 200,
                      MIN_HEALTH = 10;
 
     public float MaxDistanceScore = 0f;
-    private int score = 0;// no se usa
+    private int _score = 0;// no se usa
 
 
     private void Awake()
     {
-        _InicializeComponents();
+        InicializeComponents();
     }
 
-    private void _InicializeComponents()
+    private void InicializeComponents()
     {
         playerRigiBody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
@@ -41,70 +42,70 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _InitializePlayer();
+        InitializePlayer();
     }
 
-    private void _InitializePlayer()
+    private void InitializePlayer()
     {
-        _DesactivatePlayerAnimator();
-        _startPosition = this.transform.position; 
+        DesactivatePlayerAnimator();
+        startPosition = this.transform.position; 
     }
 
-    private void _ActivatePlayerAnimator()
+    private void ActivatePlayerAnimator()
     {
         playerAnimator.enabled = true;
     }
 
-    private void _DesactivatePlayerAnimator()
+    private void DesactivatePlayerAnimator()
     {
         playerAnimator.enabled = false;
     }
 
     public void StartGame()
     {
-        _InitializePlayerState();
+        InitializePlayerState();
 
-        _ResetPlayer();
+        ResetPlayer();
         playerAnimator.Play("Walk");
 
-        _InitizalizePoints();
+        InitizalizePoints();
     }
 
-    private void _InitializePlayerState()
+    private void InitializePlayerState()
     {
-        _ReactivatePlayer();
-        _SetAnimatorState(STATE_ALIVE, true);
-        _SetAnimatorState(STATE_ON_THE_GROUND, false);
+        ReactivatePlayer();
+        SetAnimatorState(STATE_ALIVE, true);
+        SetAnimatorState(STATE_ON_THE_GROUND, false);
     }
-    private void _InitizalizePoints()
+    private void InitizalizePoints()
     {
-        _healthPoints = INITIAL_HEALTH;
+        healthPoints = INITIAL_HEALTH;
         MaxDistanceScore = 0f;
         GameManager.SharedInstance.RestartCollectableObject();
     }
 
-    private void _ReactivatePlayer()
+    private void ReactivatePlayer()
     {
         this.gameObject.SetActive(true);
     }
 
-    private void _SetAnimatorState(string stateName, bool value)
+    private void SetAnimatorState(string stateName, bool value)
     {
         playerAnimator.SetBool(stateName, value);
     }
 
-    private void _ResetPlayer()
+    private void ResetPlayer()
     {
-        _ResetPlayerPosition();
-        _ResetPlayerVelocity();
+        ResetPlayerPosition();
+        ResetPlayerVelocity();
     }
     
-    private void _ResetPlayerPosition()
+    private void ResetPlayerPosition()
     {
-        this.transform.position = _startPosition;
+        this.transform.position = startPosition;
     }
 
-    private void _ResetPlayerVelocity()
+    private void ResetPlayerVelocity()
     {
         this.playerRigiBody.velocity = Vector2.zero; // le bajo la vel a 0 para que la restablezca la gravedad para evitar el bug de atravesa el collider por la velocidad de muerte
     }
@@ -112,40 +113,40 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        _HandleJump();
-        _HandleMovement();
+        HandleJump();
+        HandleMovement();
     }
 
-    private void _HandleJump()
+    private void HandleJump()
     {
         if (Input.GetButtonDown("Jump") && CheckGameState(GameState.InGame))
         {
-            _ActivatePlayerAnimator();
+            ActivatePlayerAnimator();
             GetComponent<AudioSource>().Play();
-            _Jump(); 
+            Jump(); 
         }
     }
 
-    private void _HandleMovement()
+    private void HandleMovement()
     {
-        bool _isGrounded = _IsTouchingTheMask();
-        bool _isMovingHorizontally = Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f;
+        bool isGrounded = IsTouchingTheMask();
+        bool isMovingHorizontally = Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f;
        
-        if (!_isMovingHorizontally && _isGrounded)
+        if (!isMovingHorizontally && isGrounded)
         {
-            _SetPlayerIdle();
+            SetPlayerIdle();
         }
         else
         {
-            _ActivatePlayerAnimator();
+            ActivatePlayerAnimator();
         }
 
-        playerAnimator.SetBool(STATE_ON_THE_GROUND, _isGrounded);
+        playerAnimator.SetBool(STATE_ON_THE_GROUND, isGrounded);
     }
 
-    private void _SetPlayerIdle()
+    private void SetPlayerIdle()
     {
-        _DesactivatePlayerAnimator();
+        DesactivatePlayerAnimator();
         playerRigiBody.GetComponent<SpriteRenderer>().sprite = SpriteIdle;
     }
 
@@ -156,106 +157,106 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _CheckPosibilityOfMovement();
+        CheckPosibilityOfMovement();
     }
 
-    private void _CheckPosibilityOfMovement()
+    private void CheckPosibilityOfMovement()
     {
         if (CheckGameState(GameState.InGame))
         {
-            _Move();
+            Move();
         }
     }
 
-    private void _Move()
+    private void Move()
     {
-        float moveSpeed = _CheckTouchRunKey() ? WalkingSpeed * 2 : WalkingSpeed;
+        float moveSpeed = CheckTouchRunKey() ? WalkingSpeed * 2 : WalkingSpeed;
 
-        if (_CheckTouchMoveKey() < 0)
+        if (CheckTouchMoveKey() < 0)
         {
-            _FlipCharacter(true);
-            _MoveHorizontally(-moveSpeed);
+            FlipCharacter(true);
+            MoveHorizontally(-moveSpeed);
 
         }
-        else if(_CheckTouchMoveKey() > 0)
+        else if(CheckTouchMoveKey() > 0)
         {
-            _FlipCharacter(false);
-            _MoveHorizontally(moveSpeed);
+            FlipCharacter(false);
+            MoveHorizontally(moveSpeed);
         }
-        else if(_CheckTouchMoveKey() == 0)
+        else if(CheckTouchMoveKey() == 0)
         {
-            _MoveHorizontally(0f);
+            MoveHorizontally(0f);
         }
 
-        _AdjustAnimatorSpeed(_CheckTouchRunKey());
+        AdjustAnimatorSpeed(CheckTouchRunKey());
 
     }
 
-    private void _FlipCharacter(bool flip)
+    private void FlipCharacter(bool flip)
     {
         playerRigiBody.GetComponent<SpriteRenderer>().flipX = flip;
     }
 
-    private void _MoveHorizontally(float speed) 
+    private void MoveHorizontally(float speed) 
     { 
         playerRigiBody.velocity = new Vector2(speed, playerRigiBody.velocity.y);
     }
 
-    private void _AdjustAnimatorSpeed(bool isRunning)
+    private void AdjustAnimatorSpeed(bool isRunning)
     {
         float animatorSpeed = isRunning ? 2f: 1f;
         playerAnimator.speed = animatorSpeed;
     }
 
-    private bool _CheckTouchRunKey()
+    private bool CheckTouchRunKey()
     {
         return Input.GetKey(KeyCode.LeftShift);  
     }
 
-    private float _CheckTouchMoveKey()
+    private float CheckTouchMoveKey()
     {
         float horizontalInmput = Input.GetAxis("Horizontal");
         return horizontalInmput;
     }
-    private bool _CheckTouchJumpKey()
+    private bool CheckTouchJumpKey()
     {
         return Input.GetButtonDown("Jump");
     }
 
-    private void _Jump()
+    private void Jump()
     {
-        if (_IsTouchingTheMask()) 
+        if (IsTouchingTheMask()) 
         {
-            float jumpForceMultiplier = _CheckTouchRunKey() ? 1.5f : 1.3f;
-            _ActivatePlayerAnimator();
+            float jumpForceMultiplier = CheckTouchRunKey() ? 1.5f : 1.3f;
+            ActivatePlayerAnimator();
             playerRigiBody.AddForce(Vector2.up * (JumpForce * jumpForceMultiplier), ForceMode2D.Impulse);
         }
     }
 
 
-    private bool _IsTouchingTheMask()
+    private bool IsTouchingTheMask()
     {
         return Physics2D.Raycast(this.transform.position, Vector2.down, 2f, GroundMask);
     }
 
     public void Die()
     {
-        _SetPlayerAnimatorParametersOnDeath();
+        SetPlayerAnimatorParametersOnDeath();
 
         GameManager.SharedInstance.GameOver();
     }
 
-    private void _SetPlayerAnimatorParametersOnDeath()
+    private void SetPlayerAnimatorParametersOnDeath()
     {
-        _SetAnimatorState(STATE_ALIVE, false);
-        _SetAnimatorState(STATE_ON_THE_GROUND, false);
+        SetAnimatorState(STATE_ALIVE, false);
+        SetAnimatorState(STATE_ON_THE_GROUND, false);
     }
 
     public float GetTravelledDistance()
     {
         if (CheckGameState(GameState.InGame))// para evitar que tome la distancia en el game over
         {
-            float distance = this.transform.position.x - _startPosition.x; // a que distancia me hayo - el punto inicial = total de espacio recorrido en la dimension x
+            float distance = this.transform.position.x - startPosition.x; // a que distancia me hayo - el punto inicial = total de espacio recorrido en la dimension x
             if (distance > MaxDistanceScore)
             { // solo se incrementa si la distancia actual es mayor que la maxima registrada
                 MaxDistanceScore = distance;
@@ -266,18 +267,18 @@ public class PlayerController : MonoBehaviour
 
     public void CollectHealth(int points) // deberia ir en collectable
     {
-        _ClampHealthPoints();
-        this._healthPoints += points;
+        ClampHealthPoints();
+        this.healthPoints += points;
 
-        if(_healthPoints <= 0) 
+        if(healthPoints <= 0) 
         {
             Die();
         }
     }
 
-    private void _ClampHealthPoints() // collectable
+    private void ClampHealthPoints() // collectable
     {
-        _healthPoints = Mathf.Clamp(_healthPoints, MIN_HEALTH, MAX_HEALTH);
+        healthPoints = Mathf.Clamp(healthPoints, MIN_HEALTH, MAX_HEALTH);
     }
 
     public void CollectDie() // collectable
@@ -287,12 +288,12 @@ public class PlayerController : MonoBehaviour
 
     public int GetHealth()  // collectable
     {
-        return _healthPoints;
+        return healthPoints;
     }
 
     public void CollectPoints(int pointsToAdd) // collectable
     {
-        score += pointsToAdd;
+        _score += pointsToAdd;
     }
 
 

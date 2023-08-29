@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class GameView : MonoBehaviour
 {
-    public Text coinText, scoreText, maxScoreText;
+    public Text CoinText, ScoreText, MaxScoreText;
 
-    private PlayerController playerController;
+    private PlayerController _playerController;
 
     private const int POINTS_PER_COIN = 50;
 
 
     void Start()
     {
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
 
@@ -22,18 +22,18 @@ public class GameView : MonoBehaviour
     {
         int coins = GameManager.SharedInstance.CollectedObject;
 
-        float distanceScore = playerController.GetTravelledDistance();
+        float distanceScore = _playerController.GetTravelledDistance();
         int coinScore = CalculateValueMultiplication(coins, POINTS_PER_COIN);
         float totalScore = SumFloatValues(distanceScore, coinScore); // sumScore
         float maxScore = GetValueFromPlayerPrefs("maxScore", 0f);
 
 
-        if (playerController.CheckGameState(GameState.InGame))
+        if (_playerController.CheckGameState(GameState.InGame))
         {
             UpdateInGameUI(coins, totalScore, maxScore);
         }
 
-        if (playerController.CheckGameState(GameState.GameOver))
+        if (_playerController.CheckGameState(GameState.GameOver))
         {
             UpdateGameOverUI(totalScore, maxScore);
         }
@@ -61,12 +61,12 @@ public class GameView : MonoBehaviour
 
     void UpdateInGameUI(int coins, float totalScore, float maxScore)
     {
-        if (coinText != null)
+        if (CoinText != null)
         {
-            coinText.text = coins.ToString(); // resuele bug q indicaba valor nulo en la variabe
+            CoinText.text = coins.ToString(); // resuele bug q indicaba valor nulo en la variabe
         }
-        scoreText.text = FormatScoreText("Score; ", totalScore);
-        maxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
+        ScoreText.text = FormatScoreText("Score; ", totalScore);
+        MaxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
     }
 
     void UpdateGameOverUI(float totalScore, float maxScore)
@@ -78,8 +78,8 @@ public class GameView : MonoBehaviour
         }
 
 
-        scoreText.text = FormatScoreText("Your Score; ", totalScore);
-        maxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
+        ScoreText.text = FormatScoreText("Your Score; ", totalScore);
+        MaxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
     }
 
     string FormatScoreText(string tittle, float score)

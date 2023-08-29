@@ -9,11 +9,11 @@ public class KillZone : MonoBehaviour
     {
         if(collision.tag == "Player") 
         { 
-            _KillPlayer(collision.gameObject);
+            KillPlayer(collision.gameObject);
         }
     }
 
-    private void _KillPlayer (GameObject player)
+    private void KillPlayer (GameObject player)
     {
         PlayerController controller = player.GetComponent<PlayerController>();
         controller.Die();

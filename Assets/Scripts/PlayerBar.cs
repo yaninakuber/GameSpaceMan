@@ -17,10 +17,10 @@ public class PlayerBar : MonoBehaviour
 
     private void Update()
     {
-        _UpdateHealthBar();
+        UpdateHealthBar();
     }
 
-    private void _UpdateHealthBar()
+    private void UpdateHealthBar()
     {
         _slider.value = PlayerController.GetHealth(); 
     }

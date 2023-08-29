@@ -40,34 +40,34 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        _SetGameState(GameState.InGame);
+        SetGameState(GameState.InGame);
     }
 
     public void BackToMenu()
     {
-        _SetGameState(GameState.Menu);
+        SetGameState(GameState.Menu);
     }
 
     public void GameOver()
     {
-        _SetGameState(GameState.GameOver);
+        SetGameState(GameState.GameOver);
     }
 
     public void WinGame()
     {
-        _SetGameState(GameState.Win);
+        SetGameState(GameState.Win);
     }
 
 
-    private void _SetGameState(GameState newGameState)
+    private void SetGameState(GameState newGameState)
     {
-        _HideAllMenues();
+        HideAllMenues();
         ActivateMenuGameStateCases(newGameState);
 
         this.CurrentGameState = newGameState;
     }
 
-    private void _HideAllMenues()
+    private void HideAllMenues()
     {
         MenuManager.SharedInstance.HideGameCanvas();
         MenuManager.SharedInstance.HideMainMenu();
@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        _SetGameState(GameState.InGame);
+        SetGameState(GameState.InGame);
     }
 
     public void RestartCollectableObject()

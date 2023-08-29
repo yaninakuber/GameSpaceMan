@@ -36,10 +36,10 @@ public class LevelManager : MonoBehaviour
     {
         _block = Instantiate(AllTheLevelBlock[0]);
         _spawnPosition = LevelStartPosition.position;
-        _AddCurrentLevelBlock();
+        AddCurrentLevelBlock();
     }
 
-    private void _AddCurrentLevelBlock()
+    private void AddCurrentLevelBlock()
     {
         CurrentLevelBlock.Add(_block);
     }
@@ -56,22 +56,22 @@ public class LevelManager : MonoBehaviour
     public void AddRandomLevelBlock()
     {
         CalculationRandomLevelBlock();
-        _CorrectionPosition();
-        _AddCurrentLevelBlock();
+        CorrectionPosition();
+        AddCurrentLevelBlock();
     }
 
     public void CalculationRandomLevelBlock()
     {
         int randomIdx = Random.Range(0, AllTheLevelBlock.Count - 1);
         _block = Instantiate(AllTheLevelBlock[randomIdx]);
-        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].endPoint.position;
+        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].EndPoint.position;
     }
 
-    private void _CorrectionPosition()
+    private void CorrectionPosition()
     {
         _block.transform.SetParent(this.transform, false);
 
-        Vector3 correction = new Vector3(_spawnPosition.x - _block.startPoin.position.x, _spawnPosition.y - _block.startPoin.position.y, 0);
+        Vector3 correction = new Vector3(_spawnPosition.x - _block.StartPoin.position.x, _spawnPosition.y - _block.StartPoin.position.y, 0);
         _block.transform.position = correction;
     }
 
@@ -79,13 +79,13 @@ public class LevelManager : MonoBehaviour
     public void GenerateFinalBlock() //privados todos los que llamo aca
     {
         _block = Instantiate(AllTheLevelBlock[6]); // 6 cambiar por last _block
-        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].endPoint.position;
+        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].EndPoint.position;
     }
 
     public void AddFinalBlock()
     {
         GenerateFinalBlock();
-        _CorrectionPosition();
+        CorrectionPosition();
     }
 
 
@@ -120,6 +120,4 @@ public class LevelManager : MonoBehaviour
         CurrentLevelBlock.Remove(oldBlock);
         Destroy(oldBlock.gameObject);
     }
-
-
 }
