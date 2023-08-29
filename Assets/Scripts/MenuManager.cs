@@ -5,60 +5,60 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
 
-    public static MenuManager sharedInstance;
-    public Canvas menuCanvas; // Este canvas me permite gestionar tod el canvas donde se gestionan tod los objetos.
-    public Canvas gameCanvas;
-    public Canvas gameOverCanvas;
-    public Canvas gameWinCanvas;
+    public static MenuManager SharedInstance;
+    public Canvas MenuCanvas; 
+    public Canvas GameCanvas;
+    public Canvas GameOverCanvas;
+    public Canvas GameWinCanvas;
 
 
     private void Awake()
     {
-        if(sharedInstance == null)
+        if(SharedInstance == null)
         {
-            sharedInstance = this;
+            SharedInstance = this;
         }
     }
 
-    public void ShowMainMenu() // mostrar el menu principal
+    public void ShowMainMenu() // mostrar el Menu principal
     {
-        menuCanvas.enabled = true; // activa el menu canvas
+        MenuCanvas.enabled = true; // activa el Menu canvas
     }
 
-    public void HideMainMenu() // se encarga de ocultar el menu canva
+    public void HideMainMenu() // se encarga de ocultar el Menu canva
     {
-        menuCanvas.enabled = false;
+        MenuCanvas.enabled = false;
     }
 
     public void ShowMenuGameOver()
     {
-        gameOverCanvas.enabled = true;
+        GameOverCanvas.enabled = true;
         GetComponent<AudioSource>().Play();
     }
 
     public void HideMenuGameOver()
     {
-        gameOverCanvas.enabled = false;
+        GameOverCanvas.enabled = false;
     }
 
     public void ShowGameCanvas()
     {
-        gameCanvas.enabled = true;
+        GameCanvas.enabled = true;
     }
 
     public void HideGameCanvas()
     {
-        gameCanvas.enabled = false;
+        GameCanvas.enabled = false;
     }
 
     public void ShowGameWinCanvas()
     {
-        gameWinCanvas.enabled = true;
+        GameWinCanvas.enabled = true;
     }
 
     public void HideGameWinCanvas()
     {
-        gameWinCanvas.enabled = false;
+        GameWinCanvas.enabled = false;
     }
 
     public void ExitGame()

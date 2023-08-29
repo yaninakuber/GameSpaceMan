@@ -15,26 +15,25 @@ public class GameView : MonoBehaviour
     void Start()
     {
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        
     }
 
 
     void Update()
     {
-        int coins = GameManager.sharedInstance.collectedObject;
+        int coins = GameManager.SharedInstance.CollectedObject;
 
         float distanceScore = playerController.GetTravelledDistance();
         int coinScore = CalculateValueMultiplication(coins, POINTS_PER_COIN);
-        float totalScore = SumFloatValues(distanceScore, coinScore);
+        float totalScore = SumFloatValues(distanceScore, coinScore); // sumScore
         float maxScore = GetValueFromPlayerPrefs("maxScore", 0f);
 
 
-        if (playerController.CheckGameState(GameState.inGame))
+        if (playerController.CheckGameState(GameState.InGame))
         {
             UpdateInGameUI(coins, totalScore, maxScore);
         }
 
-        if (playerController.CheckGameState(GameState.gameOver))
+        if (playerController.CheckGameState(GameState.GameOver))
         {
             UpdateGameOverUI(totalScore, maxScore);
         }
@@ -53,7 +52,6 @@ public class GameView : MonoBehaviour
             total += score;
         }
         return total;
-
     }
 
     float GetValueFromPlayerPrefs(string key, float defaultValue)
@@ -89,12 +87,10 @@ public class GameView : MonoBehaviour
         return tittle + ConvertFloatToString(score);
     }
 
-    string ConvertFloatToString(float number)
+    string ConvertFloatToString(float number)//helper de C# otra clase
     {
         return number.ToString("f1");
     }
-
-
 
 }
 

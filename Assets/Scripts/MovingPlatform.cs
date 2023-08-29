@@ -5,56 +5,56 @@ using UnityEngine.UIElements;
 
 public class MovingPlatform : MonoBehaviour
 {
-    public GameObject objectToMove;
+    public GameObject ObjectToMove;
 
-    public Transform startPoint;
-    public Transform endPoint;
+    public Transform StartPoint;
+    public Transform EndPoint;
 
     public float velocity;
 
-    private Vector3 moveTowards; 
+    private Vector3 _moveTowards; 
 
   
 
     private void Start()
     {
-            moveTowards = endPoint.position; 
+        _moveTowards = EndPoint.position; 
     }
 
     private void Update()
     {
-        if (GameManager.sharedInstance.currentGameState == GameState.inGame)
+        if (GameManager.SharedInstance.CurrentGameState == GameState.InGame)
         {
-            MoveObject();
-            CheckForMoventCompletion();
+            _MoveObject();
+            _CheckForMoventCompletion();
         }
     }
 
-    void MoveObject()
+    private void _MoveObject()
     {
-        objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, moveTowards, velocity * Time.deltaTime); //desde donde hacia donde
+        ObjectToMove.transform.position = Vector3.MoveTowards(ObjectToMove.transform.position, _moveTowards, velocity * Time.deltaTime); //desde donde hacia donde
     }
-    void CheckForMoventCompletion()
+    private void _CheckForMoventCompletion()
     {
-        if (IsAtPosition(endPoint.position))
+        if (_IsAtPosition(EndPoint.position))
         {
-            ChangeDirection(startPoint.position);
+            _ChangeDirection(StartPoint.position);
         }
 
-        if (IsAtPosition(startPoint.position))
+        if (_IsAtPosition(StartPoint.position))
         {
-            ChangeDirection(endPoint.position);
+            _ChangeDirection(EndPoint.position);
         }
     }
 
-    private bool IsAtPosition(Vector3 position)
+    private bool _IsAtPosition(Vector3 position)
     {
-        return objectToMove.transform.position == position;
+        return ObjectToMove.transform.position == position;
     }
 
-    void ChangeDirection(Vector3 newTarget)
+    private void _ChangeDirection(Vector3 newTarget)
     {
-        moveTowards = newTarget;
+        _moveTowards = newTarget;
     }
 
 }

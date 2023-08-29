@@ -14,6 +14,6 @@ public class ExitZone : MonoBehaviour
 
     private void RemoveLevelBlock()
     {
-        LevelManager.sharedInstance.RemoveLevelBlock();
+        LevelManager.SharedInstance.RemoveLevelBlock();
     }
 }

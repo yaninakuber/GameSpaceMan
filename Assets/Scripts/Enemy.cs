@@ -5,66 +5,66 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 
-    public float velocityEnemy = 1.5f;
-    public float playerJumpForceOnDeath =5f; 
-    public float playerColorChangeDurationOnCollision = 0.2f; 
+    public float VelocityEnemy = 1.5f;
+    public float PlayerJumpForceOnDeath =5f; 
+    public float PlayerColorChangeDurationOnCollision = 0.2f; 
 
 
-    Rigidbody2D enemyRigidBody;
+    Rigidbody2D _enemyRigidBody;
 
-    public bool facingRight = false; // para saber donde esta mirando el enemigo, como esta para la izq. la inicializamos en false
-    public int enemyDamage = 10;
+    public bool FacingRight = false; // para saber donde esta mirando el enemigo, como esta para la izq. la inicializamos en false
+    public int EnemyDamage = 10;
 
-    private Vector3 startPosition; // para resetear la posicion del enemigo a la original cuando lo reutilizo
+    private Vector3 _startPosition; // para resetear la posicion del enemigo a la original cuando lo reutilizo
 
-    private SpriteRenderer enemySpriteRenderer;
+    private SpriteRenderer _enemySpriteRenderer; // no se usa
 
-    private PlayerController playerController;
+    private PlayerController _playerController; // no se usa
 
     private void Awake()
     {
-        enemyRigidBody = GetComponent<Rigidbody2D>();
-        startPosition = this.transform.position;
+        _enemyRigidBody = GetComponent<Rigidbody2D>();
+        _startPosition = this.transform.position;
 
-        enemySpriteRenderer = GetComponent<SpriteRenderer>();
+        _enemySpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
     void Start()
     {
-        this.transform.position = startPosition; 
+        this.transform.position = _startPosition; 
     }
 
 
     private void FixedUpdate()
     {
-        UpdateDirectionEnemy();
+        _UpdateDirectionEnemy();
     }
 
-    void UpdateDirectionEnemy()
+    private void _UpdateDirectionEnemy()
     {
-        float currentVelocityEnemy = CalculateCurrentVelocity();
-        float rotationY = facingRight ? 180 : 0;
+        float currentVelocityEnemy = _CalculateCurrentVelocity();
+        float rotationY = FacingRight ? 180 : 0;
 
-        SetFacingDirection(rotationY);
-        UpdateEnemyVelocity(currentVelocityEnemy);
+        _SetFacingDirection(rotationY);
+        _UpdateEnemyVelocity(currentVelocityEnemy);
     }
 
-    float CalculateCurrentVelocity()
+    private float _CalculateCurrentVelocity()
     {
-        return facingRight ? velocityEnemy : -velocityEnemy;
+        return FacingRight ? VelocityEnemy : -VelocityEnemy;
     }
 
-    void SetFacingDirection(float rotationY)
+    private void _SetFacingDirection(float rotationY)
     {
         this.transform.eulerAngles = new Vector3(0, rotationY, 0);
     }
 
-    void UpdateEnemyVelocity(float currentVelocity)
+    private void _UpdateEnemyVelocity(float currentVelocity)
     {
-        enemyRigidBody.velocity = GameManager.sharedInstance.currentGameState == GameState.inGame
-                                  ? new Vector2(currentVelocity, enemyRigidBody.velocity.y)
-                                  : Vector2.zero;
+        _enemyRigidBody.velocity = GameManager.SharedInstance.CurrentGameState == GameState.InGame
+                                  ? new Vector2(currentVelocity, _enemyRigidBody.velocity.y)
+                                  : Vector2.zero; // if
     }
 
     
@@ -76,69 +76,69 @@ public class Enemy : MonoBehaviour
         }
         if (collision.CompareTag("Player"))
         {
-            HandlePlayerCollision(collision.gameObject);
+            _HandlePlayerCollision(collision.gameObject);
         }
-        else
+        else // atacar todos los casos
         {
-            RotateEnemy();
+            _RotateEnemy();
         }
     }
 
-    void HandlePlayerCollision(GameObject player)
+    private void _HandlePlayerCollision(GameObject player)
     {
         GetComponent<AudioSource>().Play();
 
-        PlayerController playerController = player.GetComponent<PlayerController>();
-        playerController.CollectHealth(-enemyDamage);
+        PlayerController _playerController = player.GetComponent<PlayerController>();
+        _playerController.CollectHealth(-EnemyDamage);
         
         StartCoroutine(ChangePlayerColorAndRevert(player));
         
-        MakePlayerJump(player);
+        _MakePlayerJump(player);
     }
 
-    void MakePlayerJump(GameObject player)
+    private void _MakePlayerJump(GameObject player)
     {
-        Rigidbody2D playerRigidbody = player.GetComponent<Rigidbody2D>();
-        playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, playerJumpForceOnDeath);
+        Rigidbody2D _playerRigidbody = player.GetComponent<Rigidbody2D>();
+        _playerRigidbody.velocity = new Vector2(_playerRigidbody.velocity.x, PlayerJumpForceOnDeath);
     }
 
-    void RotateEnemy()
+    private void _RotateEnemy()
     {
-        facingRight = !facingRight;
+        FacingRight = !FacingRight;
     }
 
 
     private IEnumerator ChangePlayerColorAndRevert(GameObject player)
     {
-        Color originalColor = player.GetComponent<SpriteRenderer>().color;
-        Color temporaryColor = new Color(1f, 0.7f, 0.7f); // Rojo más claro
+        Color _originalColor = player.GetComponent<SpriteRenderer>().color;
+        Color _temporaryColor = new Color(1f, 0.7f, 0.7f); // Rojo más claro
 
-        SetPlayerColor(player, temporaryColor);
+        _SetPlayerColor(player, _temporaryColor);
 
-        yield return new WaitForSeconds(playerColorChangeDurationOnCollision);
+        yield return new WaitForSeconds(PlayerColorChangeDurationOnCollision);
 
-        SetPlayerColor(player, originalColor);
+        _SetPlayerColor(player, _originalColor);
 
-        StartCoroutine(RevertPlayerColor(player)); // Agregamos la llamada a la corrutina para revertir el color nuevamente después de un tiempo
+        StartCoroutine(_RevertPlayerColor(player)); // Agregamos la llamada a la corrutina para revertir el color nuevamente después de un tiempo
     }
 
-    void SetPlayerColor(GameObject player, Color color)
+    private void _SetPlayerColor(GameObject player, Color color)
     {
         player.GetComponent<SpriteRenderer>().color = color;
     }
 
-    private IEnumerator RevertPlayerColor(GameObject player)
+    private IEnumerator _RevertPlayerColor(GameObject player)
     {
-        Color originalColor = player.GetComponent<SpriteRenderer>().color; //guardamos el color original
-        Color defaultColor = Color.white; 
+        Color _originalColor = player.GetComponent<SpriteRenderer>().color; //guardamos el color original
+        Color _defaultColor = Color.white; 
         
         float elapsedTime = 0f;
-        while (elapsedTime < playerColorChangeDurationOnCollision) // mientras el tiempo transcurrido sea menor que la duracion deseada para el cambio de color. Garantiza que el cambio de color se realice gradualmente. 
+        while (elapsedTime < PlayerColorChangeDurationOnCollision) // mientras el tiempo transcurrido sea menor que la duracion deseada para el cambio de color. Garantiza que el cambio de color se realice gradualmente. 
         {
             elapsedTime += Time.deltaTime;
-            float t = elapsedTime / playerColorChangeDurationOnCollision; //calculo de progreso
-            SetPlayerColor(player, Color.Lerp(originalColor, defaultColor, t)); //color lerp inerpola suavemente entre el color original y el nuevo color 
-            yield return null; //retornamos a la corruntina. 
+            float t = elapsedTime / PlayerColorChangeDurationOnCollision; //calculo de progreso //renombrar a otro nombre que no sea t
+            _SetPlayerColor(player, Color.Lerp(_originalColor, _defaultColor, t)); //color lerp inerpola suavemente entre el color original y el nuevo color 
+            yield return null; //retornamos a la corruntina. //tratar de evitar null 
         }
     }
 

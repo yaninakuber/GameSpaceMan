@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager sharedInstance;
+    public static LevelManager SharedInstance;
 
-    public List<LevelBlock> allTheLevelBlock = new List<LevelBlock>();
-    public List<LevelBlock> currentLevelBlock = new List<LevelBlock>();
+    public List<LevelBlock> AllTheLevelBlock = new List<LevelBlock>();
+    public List<LevelBlock> CurrentLevelBlock = new List<LevelBlock>();
 
-    public Transform levelStartPosition;
+    public Transform LevelStartPosition;
 
-    private int blockCount = 0;
-    private int quantityTotalBlocks = 8;
-    LevelBlock block;
-    Vector3 spawnPosition = Vector3.zero;
+    private int _blockCount = 0;
+    private int _quantityTotalBlocks = 8;
+    LevelBlock _block;
+    Vector3 _spawnPosition = Vector3.zero;
 
     void Awake()
     {
-        if(sharedInstance == null)
+        if(SharedInstance == null)
         {
-            sharedInstance = this;
+            SharedInstance = this;
         }
     }
 
@@ -34,14 +34,14 @@ public class LevelManager : MonoBehaviour
 
     public void GenerateInitialBlock()
     {
-        block = Instantiate(allTheLevelBlock[0]);
-        spawnPosition = levelStartPosition.position;
-        AddCurrentLevelBlock();
+        _block = Instantiate(AllTheLevelBlock[0]);
+        _spawnPosition = LevelStartPosition.position;
+        _AddCurrentLevelBlock();
     }
 
-    void AddCurrentLevelBlock()
+    private void _AddCurrentLevelBlock()
     {
-        currentLevelBlock.Add(block);
+        CurrentLevelBlock.Add(_block);
     }
 
     public void AddNextBlock()
@@ -49,66 +49,66 @@ public class LevelManager : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             AddRandomLevelBlock();
-            blockCount++;
+            _blockCount++;
         }
     }
 
     public void AddRandomLevelBlock()
     {
         CalculationRandomLevelBlock();
-        CorrectionPosition();
-        AddCurrentLevelBlock();
+        _CorrectionPosition();
+        _AddCurrentLevelBlock();
     }
 
     public void CalculationRandomLevelBlock()
     {
-        int randomIdx = Random.Range(0, allTheLevelBlock.Count - 1);
-        block = Instantiate(allTheLevelBlock[randomIdx]);
-        spawnPosition = currentLevelBlock[currentLevelBlock.Count - 1].endPoint.position;
+        int randomIdx = Random.Range(0, AllTheLevelBlock.Count - 1);
+        _block = Instantiate(AllTheLevelBlock[randomIdx]);
+        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].endPoint.position;
     }
 
-    void CorrectionPosition()
+    private void _CorrectionPosition()
     {
-        block.transform.SetParent(this.transform, false);
+        _block.transform.SetParent(this.transform, false);
 
-        Vector3 correction = new Vector3(spawnPosition.x - block.startPoin.position.x, spawnPosition.y - block.startPoin.position.y, 0);
-        block.transform.position = correction;
+        Vector3 correction = new Vector3(_spawnPosition.x - _block.startPoin.position.x, _spawnPosition.y - _block.startPoin.position.y, 0);
+        _block.transform.position = correction;
     }
 
 
-    public void GenerateFinalBlock()
+    public void GenerateFinalBlock() //privados todos los que llamo aca
     {
-        block = Instantiate(allTheLevelBlock[6]);
-        spawnPosition = currentLevelBlock[currentLevelBlock.Count - 1].endPoint.position;
+        _block = Instantiate(AllTheLevelBlock[6]); // 6 cambiar por last _block
+        _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].endPoint.position;
     }
 
     public void AddFinalBlock()
     {
         GenerateFinalBlock();
-        CorrectionPosition();
+        _CorrectionPosition();
     }
 
 
     public void GenerateBlocks()
     {
-        blockCount = 0; //la inicializo en 0 para que cuando muera se vuelvan a generar los bloques
+        _blockCount = 0; //la inicializo en 0 para que cuando muera se vuelvan a generar los bloques
 
-        while (blockCount < quantityTotalBlocks)
+        while (_blockCount < _quantityTotalBlocks)
         {
             AddNextBlock();
         }
 
-        if (blockCount == quantityTotalBlocks)
+        if (_blockCount == _quantityTotalBlocks)
         {
             AddFinalBlock();
-            blockCount++;
+            _blockCount++;
         }
     }
 
 
     public void RemoveAllLevelBlock()  // game Manager
     {
-        while (currentLevelBlock.Count > 0)
+        while (CurrentLevelBlock.Count > 0)
         {
             RemoveLevelBlock();
         }
@@ -116,8 +116,8 @@ public class LevelManager : MonoBehaviour
 
     public void RemoveLevelBlock() 
     {
-        LevelBlock oldBlock = currentLevelBlock[0];
-        currentLevelBlock.Remove(oldBlock);
+        LevelBlock oldBlock = CurrentLevelBlock[0];
+        CurrentLevelBlock.Remove(oldBlock);
         Destroy(oldBlock.gameObject);
     }
 

@@ -109,9 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ea91a5987fe428f8ffe70621841b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToMove: {fileID: 6254418459309064903}
-  startPoint: {fileID: 3101223225460510946}
-  endPoint: {fileID: 3101223225515151977}
+  ObjectToMove: {fileID: 6254418459309064903}
+  StartPoint: {fileID: 3101223225460510946}
+  EndPoint: {fileID: 3101223225515151977}
   velocity: 1.5
 --- !u!1001 &3101223225413458753
 PrefabInstance:

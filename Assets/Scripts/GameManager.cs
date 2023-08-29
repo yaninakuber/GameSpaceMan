@@ -4,96 +4,92 @@ using UnityEngine;
 
 public enum GameState
 {
-    menu,
-    inGame,
-    gameOver,
-    win
+    Menu, 
+    InGame,
+    GameOver,
+    Win
 }
 
 public class GameManager : MonoBehaviour
 {
-    public GameState currentGameState = GameState.menu;
-    public static GameManager sharedInstance;
+    public GameState CurrentGameState = GameState.Menu;
+    public static GameManager SharedInstance; 
 
-    private PlayerController playerController;
+    private PlayerController _playerController; 
 
-    public int collectedObject = 0;
+    public int CollectedObject = 0;
 
 
     private void Awake()
     {
-        sharedInstance = this;
+        SharedInstance = this;
     }
 
-
-    void Start()
+    private void Start()
     {
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
-
-    void Update()
+    private void Update()
     {
-        if (Input.GetButtonDown("Submit") && currentGameState != GameState.inGame)
+        if (Input.GetButtonDown("Submit") && CurrentGameState != GameState.InGame)
         {
             StartGame();
         }
     }
 
-
     public void StartGame()
     {
-        SetGameState(GameState.inGame);
+        _SetGameState(GameState.InGame);
     }
 
     public void BackToMenu()
     {
-        SetGameState(GameState.menu);
+        _SetGameState(GameState.Menu);
     }
 
     public void GameOver()
     {
-        SetGameState(GameState.gameOver);
+        _SetGameState(GameState.GameOver);
     }
 
     public void WinGame()
     {
-        SetGameState(GameState.win);
+        _SetGameState(GameState.Win);
     }
 
 
-    void SetGameState(GameState newGameState)
+    private void _SetGameState(GameState newGameState)
     {
-        HideAllMenues();
+        _HideAllMenues();
         ActivateMenuGameStateCases(newGameState);
 
-        this.currentGameState = newGameState;
-
+        this.CurrentGameState = newGameState;
     }
 
-    void HideAllMenues()
+    private void _HideAllMenues()
     {
-        MenuManager.sharedInstance.HideGameCanvas();
-        MenuManager.sharedInstance.HideMainMenu();
-        MenuManager.sharedInstance.HideMenuGameOver();
-        MenuManager.sharedInstance.HideGameWinCanvas();
+        MenuManager.SharedInstance.HideGameCanvas();
+        MenuManager.SharedInstance.HideMainMenu();
+        MenuManager.SharedInstance.HideMenuGameOver();
+        MenuManager.SharedInstance.HideGameWinCanvas();
     }
 
     void ActivateMenuGameStateCases(GameState newGameState)
     {
         switch (newGameState)
         {
-            case GameState.menu:
-                MenuManager.sharedInstance.ShowMainMenu();
+            case GameState.Menu:
+                MenuManager.SharedInstance.ShowMainMenu();
                 break;
-            case GameState.inGame:
+            case GameState.InGame:
                 HandleInGame();
                 break;
-            case GameState.gameOver:
-                MenuManager.sharedInstance.ShowMenuGameOver();
+            case GameState.GameOver:
+                MenuManager.SharedInstance.ShowMenuGameOver();
                 break;
-            case GameState.win:
-                MenuManager.sharedInstance.ShowGameWinCanvas();
+            case GameState.Win:
+                MenuManager.SharedInstance.ShowGameWinCanvas();
                 break;
         }
 
@@ -101,28 +97,28 @@ public class GameManager : MonoBehaviour
 
     void HandleInGame()
     {
-        LevelManager.sharedInstance.RemoveAllLevelBlock();
-        LevelManager.sharedInstance.GenerateInitialBlock();
-        LevelManager.sharedInstance.GenerateBlocks();
-        playerController.StartGame();
+        LevelManager.SharedInstance.RemoveAllLevelBlock();
+        LevelManager.SharedInstance.GenerateInitialBlock();
+        LevelManager.SharedInstance.GenerateBlocks();
+        _playerController.StartGame();
 
-        MenuManager.sharedInstance.ShowGameCanvas();
+        MenuManager.SharedInstance.ShowGameCanvas();
 
     }
 
     public void CollectableObject(Collectable collectable)
     {
-        collectedObject += collectable.value;
+        CollectedObject += collectable.ValueCoin;
     }
 
     public void RestartGame()
     {
-        SetGameState(GameState.inGame);
+        _SetGameState(GameState.InGame);
     }
 
     public void RestartCollectableObject()
     {
-        collectedObject = 0;
+        CollectedObject = 0;
     }
 
 }

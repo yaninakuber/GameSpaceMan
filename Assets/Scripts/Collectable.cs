@@ -4,21 +4,20 @@ using UnityEngine;
 
 public enum CollectableType
 {
-    healthPotion,
-    diedPotion,
-    money
+    HealthPotion,
+    DiedPotion,
+    Money
 }
 
 public class Collectable : MonoBehaviour
 {
+    public CollectableType TypeCollectable = CollectableType.Money;
+    public int ValueCoin = 1; 
 
-    public CollectableType type = CollectableType.money;
-    public int value = 1;
+    private SpriteRenderer _sprite; 
+    private CircleCollider2D _itemCollider; 
 
-    private SpriteRenderer sprite; 
-    private CircleCollider2D itemCollider; 
-
-    bool hasBeenCollected = false; 
+    bool hasBeenCollected = false; // no se usa  
 
     private const int POINTS_PER_COINS = 50;
 
@@ -26,8 +25,8 @@ public class Collectable : MonoBehaviour
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        itemCollider = GetComponent<CircleCollider2D>(); 
+        _sprite = GetComponent<SpriteRenderer>();
+        _itemCollider = GetComponent<CircleCollider2D>(); 
     }
 
     private void Start()
@@ -35,43 +34,43 @@ public class Collectable : MonoBehaviour
         player = GameObject.Find("Player");
     }
 
-    void Hide()
+    private void _HideCollectable() 
     {
-        sprite.enabled = false;
-        itemCollider.enabled = false;
+        _sprite.enabled = false;
+        _itemCollider.enabled = false;
     }
 
-    void CollectMoney()
+    private void _CollectMoney()
     {
-        GameManager.sharedInstance.CollectableObject(this);
+        GameManager.SharedInstance.CollectableObject(this); //deberia estar aca la funcion
         GetComponent<AudioSource>().Play();
         player.GetComponent<PlayerController>().CollectPoints(POINTS_PER_COINS);
     }
 
-    void CollectHealthPotion()
+    private void _CollectHealthPotion()
     {
-        player.GetComponent<PlayerController>().CollectHealth(this.value);
+        player.GetComponent<PlayerController>().CollectHealth(this.ValueCoin); //deberia estar aca
     }
 
-    void CollectDiedPotion()
+    private void _CollectDiedPotion()
     {
         player.GetComponent<PlayerController>().CollectDie();
     }
 
-    void Collect()
+    private void _Collect()
     {
-        Hide();
+        _HideCollectable();
 
-        switch (type)
+        switch (TypeCollectable) //cambiar TypeCollectable
         {
-            case CollectableType.money:
-                CollectMoney();
+            case CollectableType.Money:
+                _CollectMoney();
                 break;
-            case CollectableType.healthPotion:
-                CollectHealthPotion();
+            case CollectableType.HealthPotion:
+                _CollectHealthPotion();
                 break;
-            case CollectableType.diedPotion:
-                CollectDiedPotion();
+            case CollectableType.DiedPotion:
+                _CollectDiedPotion();
                 break;
         }
     }
@@ -80,11 +79,8 @@ public class Collectable : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Collect();
+            _Collect();
         }
     }
-
-
-
 }
 

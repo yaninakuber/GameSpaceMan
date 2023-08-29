@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Nave : MonoBehaviour
 {
-    public GameObject objectToMove;
-    public Transform startPoint;
-    public Transform endPoint;
-    public float velocity;
+    public GameObject ObjectToMove;
+    public Transform StartPoint;
+    public Transform EndPoint;
+    public float Velocity;
 
-    private Vector3 initialPosition;
+    private Vector3 _initialPosition;
 
-    private PlayerController controller;
+    private PlayerController _controller;
 
     private enum MovementState
     {
@@ -20,26 +20,26 @@ public class Nave : MonoBehaviour
         Returning
     }
 
-    private MovementState movementState = MovementState.Idle;
+    private MovementState _movementState = MovementState.Idle; 
 
     private void Start()
     {
-        controller = GameObject.Find("Player").GetComponent<PlayerController>();
-        initialPosition = objectToMove.transform.position;
+        _controller = GameObject.Find("Player").GetComponent<PlayerController>();
+        _initialPosition = ObjectToMove.transform.position;
     }
 
     private void Update()
     {
-        switch (movementState)
+        switch (_movementState)
         {
             case MovementState.MovingUp:
-                MoveObjectTowards(endPoint.position);
-                CheckForMovementCompletion(endPoint.position, MovementState.Returning);
+                _MoveObjectTowards(EndPoint.position);
+                _CheckForMovementCompletion(EndPoint.position, MovementState.Returning);
                 break;
 
             case MovementState.Returning:
-                MoveObjectTowards(initialPosition);
-                CheckForMovementCompletion(initialPosition, MovementState.Idle);
+                _MoveObjectTowards(_initialPosition);
+                _CheckForMovementCompletion(_initialPosition, MovementState.Idle);
                 break;
         }
     }
@@ -48,46 +48,46 @@ public class Nave : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-           HandlePlayerCollision(collision.gameObject);
+           _HandlePlayerCollision(collision.gameObject);
         }
     }
 
-    private void HandlePlayerCollision(GameObject player)
+    private void _HandlePlayerCollision(GameObject player)
     {
-        StartMovingUp();
-        DesactivatePlayer(player);
-        StartCoroutine(WaitForWin());
+        _StartMovingUp();
+        _DesactivatePlayer(player);
+        StartCoroutine(_WaitForWin());
     }
 
 
-    private void StartMovingUp()
+    private void _StartMovingUp()
     {
-        movementState = MovementState.MovingUp;
+        _movementState = MovementState.MovingUp;
     }
 
-    private void DesactivatePlayer(GameObject player)
+    private void _DesactivatePlayer(GameObject player)
     {
         player.SetActive(false);
     }
 
-    private IEnumerator WaitForWin()
+    private IEnumerator _WaitForWin()
     {
         yield return new WaitForSeconds(3f);
-        controller.PlayerWin();
+        _controller.PlayerWin();
     }
 
 
 
-    private void MoveObjectTowards(Vector3 targetPosition)
+    private void _MoveObjectTowards(Vector3 targetPosition)
     {
-        objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, targetPosition, velocity * Time.deltaTime);
+        ObjectToMove.transform.position = Vector3.MoveTowards(ObjectToMove.transform.position, targetPosition, Velocity * Time.deltaTime);
     }
 
-    private void CheckForMovementCompletion(Vector3 targetPosition, MovementState nextState)
+    private void _CheckForMovementCompletion(Vector3 targetPosition, MovementState nextState)
     {
-        if (objectToMove.transform.position == targetPosition)
+        if (ObjectToMove.transform.position == targetPosition)
         {
-            movementState = nextState;
+            _movementState = nextState;
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelBlock : MonoBehaviour
 {
-    public Transform startPoin, endPoint;
+    public Transform startPoin;
+    public Transform endPoint; 
 
 }

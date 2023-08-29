@@ -6,23 +6,23 @@ using UnityEngine.UI;
 
 public class PlayerBar : MonoBehaviour
 {
-    private Slider slider;
-    public PlayerController playerController;
+    private Slider _slider;
+    public PlayerController PlayerController;
 
     void Start()
     {
-        slider = GetComponent<Slider>(); 
-        slider.maxValue = PlayerController.MAX_HEALTH; 
+        _slider = GetComponent<Slider>(); 
+        _slider.maxValue = PlayerController.MAX_HEALTH; 
     }
 
-    void Update()
+    private void Update()
     {
-        UpdateHealthBar();
+        _UpdateHealthBar();
     }
 
-    void UpdateHealthBar()
+    private void _UpdateHealthBar()
     {
-        slider.value = playerController.GetHealth(); 
+        _slider.value = PlayerController.GetHealth(); 
     }
 
 }
