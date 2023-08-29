@@ -20,6 +20,7 @@ public class Collectable : MonoBehaviour
     private const int POINTS_PER_COINS = 50;
 
     GameObject player;
+    private PlayerController _playerController;
 
     private void Awake()
     {
@@ -40,15 +41,17 @@ public class Collectable : MonoBehaviour
 
     private void CollectMoney()
     {
-        GameManager.SharedInstance.CollectableObject(this); //deberia estar aca la funcion
+        GameManager.SharedInstance.CollectableObject(this); 
         GetComponent<AudioSource>().Play();
         player.GetComponent<PlayerController>().CollectPoints(POINTS_PER_COINS);
     }
 
+
     private void CollectHealthPotion()
     {
-        player.GetComponent<PlayerController>().CollectHealth(this.ValueCoin); //deberia estar aca
+        player.GetComponent<PlayerController>().CollectHealth(this.ValueCoin); 
     }
+
 
     private void CollectDiedPotion()
     {
@@ -59,7 +62,7 @@ public class Collectable : MonoBehaviour
     {
         HideCollectable();
 
-        switch (TypeCollectable) //cambiar TypeCollectable
+        switch (TypeCollectable) 
         {
             case CollectableType.Money:
                 CollectMoney();

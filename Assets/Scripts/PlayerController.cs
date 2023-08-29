@@ -276,22 +276,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ClampHealthPoints() // collectable
+    private void ClampHealthPoints() 
     {
         healthPoints = Mathf.Clamp(healthPoints, MIN_HEALTH, MAX_HEALTH);
     }
 
-    public void CollectDie() // collectable
+    public void CollectDie() 
     {
         Die();
     }
 
-    public int GetHealth()  // collectable
+    public int GetHealth()  
     {
         return healthPoints;
     }
 
-    public void CollectPoints(int pointsToAdd) // collectable
+    public void CollectPoints(int pointsToAdd) 
     {
         _score += pointsToAdd;
     }

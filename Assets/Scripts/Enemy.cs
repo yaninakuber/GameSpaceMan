@@ -10,29 +10,25 @@ public class Enemy : MonoBehaviour
     public float PlayerColorChangeDurationOnCollision = 0.2f; 
 
 
-    Rigidbody2D enemyRigidBody;
+    Rigidbody2D _enemyRigidBody;
 
-    public bool FacingRight = false; // para saber donde esta mirando el enemigo, como esta para la izq. la inicializamos en false
+    public bool FacingRight = false; 
     public int EnemyDamage = 10;
 
-    private Vector3 startPosition; // para resetear la posicion del enemigo a la original cuando lo reutilizo
+    private Vector3 _startPosition; 
 
-    private SpriteRenderer enemySpriteRenderer; // no se usa
-
-    private PlayerController _playerController; // no se usa
 
     private void Awake()
     {
-        enemyRigidBody = GetComponent<Rigidbody2D>();
-        startPosition = this.transform.position;
+        _enemyRigidBody = GetComponent<Rigidbody2D>();
+        _startPosition = this.transform.position;
 
-        enemySpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
     void Start()
     {
-        this.transform.position = startPosition; 
+        this.transform.position = _startPosition; 
     }
 
 
@@ -62,8 +58,8 @@ public class Enemy : MonoBehaviour
 
     private void UpdateEnemyVelocity(float currentVelocity)
     {
-        enemyRigidBody.velocity = GameManager.SharedInstance.CurrentGameState == GameState.InGame
-                                  ? new Vector2(currentVelocity, enemyRigidBody.velocity.y)
+        _enemyRigidBody.velocity = GameManager.SharedInstance.CurrentGameState == GameState.InGame
+                                  ? new Vector2(currentVelocity, _enemyRigidBody.velocity.y)
                                   : Vector2.zero; // if
     }
 

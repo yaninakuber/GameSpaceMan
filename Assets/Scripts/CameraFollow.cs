@@ -10,12 +10,12 @@ public class CameraFollow : MonoBehaviour
     public Vector3 VelocityCam = Vector3.zero; 
 
     private bool _isResettingCamera = false; 
-    private bool _isFirstMove = true; // arregla bugg de movimiento cortado la primera vez
+    private bool _isFirstMove = true; // arregla movimiento cortado la primera vez
 
 
     void Awake()
     {
-        Application.targetFrameRate = 60;  // va a intentar ir a 60 frame x seg
+        Application.targetFrameRate = 60;  
         MoveCamera(true); // inicializa el movimiento suave
     }
 
@@ -52,7 +52,7 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    private void HandleGameOverOrWinState() //dos diferentes estados 
+    private void HandleGameOverOrWinState() 
     {
         if (!_isResettingCamera)
         {
@@ -70,15 +70,14 @@ public class CameraFollow : MonoBehaviour
     private Vector3 CalculateSmoothDestination()
     {
         Vector3 targetPosition = Target.position;
-        Vector3 restrictedPosition = new Vector3(Mathf.Max(targetPosition.x - Offset.x, this.transform.position.x), Offset.y, Offset.z);
-        // destino que restringe mov de cam a la izquierda
-        // dificil de leer
+        Vector3 restrictedPosition = new Vector3(Mathf.Max(targetPosition.x - Offset.x, this.transform.position.x), Offset.y, Offset.z); // destino que restringe mov de cam a la izquierda
+      
         return Vector3.SmoothDamp(this.transform.position, restrictedPosition, ref VelocityCam, DampingTime); // lo sigue lentamente 
     }
 
     private void ResetCameraPosition()
     {
-        MoveCamera(false); // un metodo hace dos cosas
+        MoveCamera(false); 
     }
 
     private void MoveCamera(bool shouldSmooth)

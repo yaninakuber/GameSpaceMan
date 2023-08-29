@@ -23,8 +23,8 @@ public class GameView : MonoBehaviour
         int coins = GameManager.SharedInstance.CollectedObject;
 
         float distanceScore = _playerController.GetTravelledDistance();
-        int coinScore = CalculateValueMultiplication(coins, POINTS_PER_COIN);
-        float totalScore = SumFloatValues(distanceScore, coinScore); // sumScore
+        int coinScore = MultiplicateValueScore(coins, POINTS_PER_COIN);
+        float totalScore = SumValueScores(distanceScore, coinScore); 
         float maxScore = GetValueFromPlayerPrefs("maxScore", 0f);
 
 
@@ -39,12 +39,12 @@ public class GameView : MonoBehaviour
         }
     }
 
-    int CalculateValueMultiplication(int values, int multiplier)
+    int MultiplicateValueScore(int values, int multiplier)
     {
         return values * multiplier;
     }
 
-    float SumFloatValues(params float[] scores)
+    float SumValueScores(params float[] scores)
     {
         float total = 0;
         foreach (float score in scores)

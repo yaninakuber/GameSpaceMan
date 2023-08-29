@@ -106,7 +106,7 @@ public class LevelManager : MonoBehaviour
     }
 
 
-    public void RemoveAllLevelBlock()  // game Manager
+    public void RemoveAllLevelBlock()  
     {
         while (CurrentLevelBlock.Count > 0)
         {
