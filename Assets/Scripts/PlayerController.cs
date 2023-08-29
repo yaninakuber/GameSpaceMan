@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             _ActivatePlayerAnimator();
             GetComponent<AudioSource>().Play();
-            _Jump();
+            _Jump(); 
         }
     }
 
@@ -226,11 +226,12 @@ public class PlayerController : MonoBehaviour
     {
         if (_IsTouchingTheMask()) 
         {
-            float jumpForceMultiplier = _CheckTouchJumpKey() ? 1.2f : 1.0f;
+            float jumpForceMultiplier = _CheckTouchRunKey() ? 1.5f : 1.3f;
             _ActivatePlayerAnimator();
             playerRigiBody.AddForce(Vector2.up * (JumpForce * jumpForceMultiplier), ForceMode2D.Impulse);
         }
     }
+
 
     private bool _IsTouchingTheMask()
     {
