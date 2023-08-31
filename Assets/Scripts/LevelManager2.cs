@@ -13,7 +13,7 @@ public class LevelManager : MonoBehaviour
     public Transform LevelStartPosition;
 
     private int _blockCount = 0;
-    private int _quantityTotalBlocks = 8;
+    private int _quantityTotalBlocks = 2;
     LevelBlock _block;
     Vector3 _spawnPosition = Vector3.zero;
 
@@ -37,6 +37,7 @@ public class LevelManager : MonoBehaviour
         _block = Instantiate(AllTheLevelBlock[0]);
         _spawnPosition = LevelStartPosition.position;
         AddCurrentLevelBlock();
+        _blockCount++;
     }
 
     private void AddCurrentLevelBlock()
@@ -76,9 +77,9 @@ public class LevelManager : MonoBehaviour
     }
 
 
-    public void GenerateFinalBlock() //privados todos los que llamo aca
+    public void GenerateFinalBlock() 
     {
-        _block = Instantiate(AllTheLevelBlock[6]); // 6 cambiar por last _block
+        _block = Instantiate(AllTheLevelBlock[6]); 
         _spawnPosition = CurrentLevelBlock[CurrentLevelBlock.Count - 1].EndPoint.position;
     }
 
@@ -103,6 +104,7 @@ public class LevelManager : MonoBehaviour
             AddFinalBlock();
             _blockCount++;
         }
+        AddCurrentLevelBlock();
     }
 
 
@@ -120,4 +122,6 @@ public class LevelManager : MonoBehaviour
         CurrentLevelBlock.Remove(oldBlock);
         Destroy(oldBlock.gameObject);
     }
+
+
 }
