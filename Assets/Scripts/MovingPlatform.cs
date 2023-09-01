@@ -1,46 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MovingPlatform : MonoBehaviour
 {
-    public GameObject objectToMove; //objeto a mover
+    public GameObject ObjectToMove;
 
-    public Transform startPoint;
-    public Transform endPoint;
+    public Transform StartPoint;
+    public Transform EndPoint;
 
     public float velocity;
 
-    private Vector3 moveTowards; //Mover hacia
+    private Vector3 _moveTowards; 
 
   
 
     private void Start()
     {
-            moveTowards = endPoint.position; //cuando arranca
-
+        _moveTowards = EndPoint.position; 
     }
 
     private void Update()
     {
-        if (GameManager.sharedInstance.currentGameState == GameState.inGame)
+        if (GameManager.SharedInstance.CurrentGameState == GameState.InGame)
         {
-            objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, moveTowards, velocity * Time.deltaTime); //desde donde hacia donde,hacia donde, en que tiempo que esta guardando en el start el endpoint
-
-            if (objectToMove.transform.position == endPoint.position)// si el objeto llego al punto final de movimiento
-            {
-                moveTowards = startPoint.position; //ahora se va a mover hacia el start
-            }
-
-            if (objectToMove.transform.position == startPoint.position)// empieza de nuevo
-            {
-                moveTowards = endPoint.position;
-            }
+            MoveObject();
+            CheckForMoventCompletion();
         }
-      
     }
 
-    
+    private void MoveObject()
+    {
+        ObjectToMove.transform.position = Vector3.MoveTowards(ObjectToMove.transform.position, _moveTowards, velocity * Time.deltaTime); //desde donde hacia donde
+    }
+    private void CheckForMoventCompletion()
+    {
+        if (IsAtPosition(EndPoint.position))
+        {
+            ChangeDirection(StartPoint.position);
+        }
+
+        if (IsAtPosition(StartPoint.position))
+        {
+            ChangeDirection(EndPoint.position);
+        }
+    }
+
+    private bool IsAtPosition(Vector3 position)
+    {
+        return ObjectToMove.transform.position == position;
+    }
+
+    private void ChangeDirection(Vector3 newTarget)
+    {
+        _moveTowards = newTarget;
+    }
+
 }
 
 

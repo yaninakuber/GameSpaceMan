@@ -63,8 +63,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bc95288f74f141e8b8f5084cb73f59d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPoin: {fileID: 3634226894593501066}
-  endPoint: {fileID: 4336778243235585925}
+  StartPoin: {fileID: 3634226894593501066}
+  EndPoint: {fileID: 4336778243235585925}
 --- !u!1 &1429221289952286235
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2880637110006662735, guid: 7c3d07d8319c44384b6378200e68156d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -34.992493
+      value: -34.92
       objectReference: {fileID: 0}
     - target: {fileID: 2880637110006662735, guid: 7c3d07d8319c44384b6378200e68156d, type: 3}
       propertyPath: m_LocalPosition.z

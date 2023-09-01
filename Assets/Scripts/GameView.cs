@@ -5,48 +5,93 @@ using UnityEngine.UI;
 
 public class GameView : MonoBehaviour
 {
-    public Text coinText, scoreText, maxScoreText;
+    public Text CoinText, ScoreText, MaxScoreText;
 
-    private PlayerController controller;
+    private PlayerController _playerController;
 
-    private const int POINTS_PER_COIN = 50; // Valor de puntos por moneda
+    private const int POINTS_PER_COIN = 50;
 
 
     void Start()
     {
-        controller = GameObject.Find("Player").GetComponent<PlayerController>();
+        _playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
 
-    void Update() 
+    void Update()
     {
-        if(GameManager.sharedInstance.currentGameState == GameState.inGame)//si estoy jugando quiero actualizar tod el tiempo el puntaje
+        int coins = GameManager.SharedInstance.CollectedObject;
+
+        float distanceScore = _playerController.GetTravelledDistance();
+        int coinScore = MultiplicateValueScore(coins, POINTS_PER_COIN);
+        float totalScore = SumValueScores(distanceScore, coinScore); 
+        float maxScore = GetValueFromPlayerPrefs("maxScore", 0f);
+
+
+        if (_playerController.CheckGameState(GameState.InGame))
         {
-            int coins = GameManager.sharedInstance.collectedObject; 
-            float distanceScore = controller.GetTravelledDistance(); // se los voy a pasar de acuerdo a la distancia recorrida por eso float
-            int coinScore = coins * POINTS_PER_COIN; // Puntos por monedas recolectadas
-            float totalScore = distanceScore + coinScore; // Total de puntos
-
-            float maxScore = PlayerPrefs.GetFloat("maxScore", 0f);
-
-            if (coinText != null)
-            {
-                coinText.text = coins.ToString(); // resuele bug q indicaba valor nulo en la variabe
-            }
-            scoreText.text = "Score: " + totalScore.ToString("f1");
-            maxScoreText.text = "Max. Score: " + maxScore.ToString("f1"); // con un decimal
-
+            UpdateInGameUI(coins, totalScore, maxScore);
         }
 
-        if(GameManager.sharedInstance.currentGameState == GameState.gameOver)
+        if (_playerController.CheckGameState(GameState.GameOver))
         {
-            float distanceScore = controller.GetTravelledDistance(); // Puntos por distancia
-            int coinScore = GameManager.sharedInstance.collectedObject * POINTS_PER_COIN; // Puntos por monedas recolectadas
-            float totalScore = distanceScore + coinScore; // Total de puntos
-            float maxScore = PlayerPrefs.GetFloat("maxScore", 0f);
-
-            scoreText.text = "Your Score: " + totalScore.ToString("f1");
-            maxScoreText.text = "Max. Score: " + maxScore.ToString("f1"); // con un decimal
+            UpdateGameOverUI(totalScore, maxScore);
         }
     }
+
+    int MultiplicateValueScore(int values, int multiplier)
+    {
+        return values * multiplier;
+    }
+
+    float SumValueScores(params float[] scores)
+    {
+        float total = 0;
+        foreach (float score in scores)
+        {
+            total += score;
+        }
+        return total;
+    }
+
+    float GetValueFromPlayerPrefs(string key, float defaultValue)
+    {
+        return PlayerPrefs.GetFloat(key, defaultValue);
+    }
+
+    void UpdateInGameUI(int coins, float totalScore, float maxScore)
+    {
+        if (CoinText != null)
+        {
+            CoinText.text = coins.ToString(); // resuele bug q indicaba valor nulo en la variabe
+        }
+        ScoreText.text = FormatScoreText("Score; ", totalScore);
+        MaxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
+    }
+
+    void UpdateGameOverUI(float totalScore, float maxScore)
+    {
+        if (totalScore > maxScore)
+        {
+            maxScore = totalScore;
+            PlayerPrefs.SetFloat("maxScore", maxScore); // Almacenamos el nuevo maxScore en PlayerPrefs
+        }
+
+
+        ScoreText.text = FormatScoreText("Your Score; ", totalScore);
+        MaxScoreText.text = FormatScoreText("Max. Score; ", maxScore);
+    }
+
+    string FormatScoreText(string tittle, float score)
+    {
+        return tittle + ConvertFloatToString(score);
+    }
+
+    string ConvertFloatToString(float number)//helper de C# otra clase
+    {
+        return number.ToString("f1");
+    }
+
 }
+
+

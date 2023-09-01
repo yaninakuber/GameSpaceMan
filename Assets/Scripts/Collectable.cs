@@ -4,82 +4,84 @@ using UnityEngine;
 
 public enum CollectableType
 {
-    healthPotion,
-    diedPotion,
-    money
+    HealthPotion,
+    DiedPotion,
+    Money
 }
 
 public class Collectable : MonoBehaviour
 {
+    public CollectableType TypeCollectable = CollectableType.Money;
+    public int ValueCoin = 1; 
 
-    public CollectableType type = CollectableType.money;
+    private SpriteRenderer _sprite; 
+    private CircleCollider2D _itemCollider; 
 
-    private SpriteRenderer sprite; //accede a la imagen visual
-    private CircleCollider2D itemCollider; //para acceder directamente al collider del objeto
+    private const int POINTS_PER_COINS = 50;
 
-    bool hasBeenCollected = false; // para saber si ya fue recolecta
-
-    public int value = 1; // indicar el valor del objeto
-
-    private const int POINTS_PER_COINS = 50;// Establece el valor de puntos por moneda
-
-    GameObject player; //inicializamos una variable player para posiones
+    GameObject player;
+    private PlayerController _playerController;
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        itemCollider = GetComponent<CircleCollider2D>(); // configuramos las variables desde el inicio, permite acceder y manejar las propiedades y el comportamiento
+        _sprite = GetComponent<SpriteRenderer>();
+        _itemCollider = GetComponent<CircleCollider2D>(); 
     }
 
     private void Start()
     {
-        player = GameObject.Find("Player"); // busco el player 
+        player = GameObject.Find("Player");
     }
 
-    void Show()
+    private void HideCollectable() 
     {
-        sprite.enabled = true;
-        itemCollider.enabled = true;
-        hasBeenCollected = false;
+        _sprite.enabled = false;
+        _itemCollider.enabled = false;
     }
 
-    void Hide()
+    private void CollectMoney()
     {
-        sprite.enabled = false;
-        itemCollider.enabled = false;
+        GameManager.SharedInstance.CollectableObject(this); 
+        GetComponent<AudioSource>().Play();
+        player.GetComponent<PlayerController>().CollectPoints(POINTS_PER_COINS);
     }
 
-    void Collect()
-    {
-        Hide();
-        hasBeenCollected = true;
 
-        switch (this.type)
+    private void CollectHealthPotion()
+    {
+        player.GetComponent<PlayerController>().CollectHealth(this.ValueCoin); 
+    }
+
+
+    private void CollectDiedPotion()
+    {
+        player.GetComponent<PlayerController>().CollectDie();
+    }
+
+    private void Collect()
+    {
+        HideCollectable();
+
+        switch (TypeCollectable) 
         {
-            case CollectableType.money:
-                GameManager.sharedInstance.CollectableObject(this);
-                GetComponent<AudioSource>().Play();
+            case CollectableType.Money:
+                CollectMoney();
                 break;
-            case CollectableType.healthPotion:
-                player.GetComponent<PlayerController>().CollectHealth(this.value); // una vez localizado puedo entrar en su componente del scrpt y buscar el metod collect health indicando el valor
+            case CollectableType.HealthPotion:
+                CollectHealthPotion();
                 break;
-            case CollectableType.diedPotion:
-                player.GetComponent<PlayerController>().CollectDie(); 
+            case CollectableType.DiedPotion:
+                CollectDiedPotion();
                 break;
-        }
-        if (this.type == CollectableType.money)
-        {
-            player.GetComponent<PlayerController>().CollectPoints(POINTS_PER_COINS); // Suma puntos por moneda recolectada
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player")
+        if (collision.CompareTag("Player"))
         {
             Collect();
         }
     }
-
 }
 
