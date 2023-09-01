@@ -13,7 +13,7 @@ public class LevelManager : MonoBehaviour
     public Transform LevelStartPosition;
 
     private int _blockCount = 0;
-    private int _quantityTotalBlocks = 2;
+    private int _quantityTotalBlocks = 6;
     LevelBlock _block;
     Vector3 _spawnPosition = Vector3.zero;
 

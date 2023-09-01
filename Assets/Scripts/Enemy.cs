@@ -6,30 +6,22 @@ public class Enemy : MonoBehaviour
 {
 
     public float VelocityEnemy = 1.5f;
-    public float PlayerJumpForceOnDeath =5f; 
-    public float PlayerColorChangeDurationOnCollision = 0.2f; 
+    public float PlayerJumpForceOnDeath = 5f;
+    public float PlayerColorChangeDurationOnCollision = 0.2f;
 
 
     Rigidbody2D _enemyRigidBody;
 
-    public bool FacingRight = false; 
+    public bool FacingRight = false;
     public int EnemyDamage = 10;
 
-    private Vector3 _startPosition; 
 
 
     private void Awake()
     {
         _enemyRigidBody = GetComponent<Rigidbody2D>();
-        _startPosition = this.transform.position;
-
     }
 
-
-    void Start()
-    {
-        this.transform.position = _startPosition; 
-    }
 
 
     private void FixedUpdate()
@@ -45,6 +37,7 @@ public class Enemy : MonoBehaviour
         SetFacingDirection(rotationY);
         UpdateEnemyVelocity(currentVelocityEnemy);
     }
+
 
     private float CalculateCurrentVelocity()
     {
@@ -74,7 +67,7 @@ public class Enemy : MonoBehaviour
         {
             HandlePlayerCollision(collision.gameObject);
         }
-        else // atacar todos los casos
+        else 
         {
             RotateEnemy();
         }
@@ -137,5 +130,7 @@ public class Enemy : MonoBehaviour
             yield return null; //retornamos a la corruntina. //tratar de evitar null 
         }
     }
+
+
 
 }

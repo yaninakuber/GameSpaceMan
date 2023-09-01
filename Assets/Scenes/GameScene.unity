@@ -5250,7 +5250,7 @@ GameObject:
   - component: {fileID: 2053839563}
   m_Layer: 0
   m_Name: LimitAdvance
-  m_TagString: Untagged
+  m_TagString: ExitZone
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5329,11 +5329,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3567103208892183594, guid: bc517b1e37e89417d97b46b78cae33fb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.4
+      value: -3.75
       objectReference: {fileID: 0}
     - target: {fileID: 3567103208892183594, guid: bc517b1e37e89417d97b46b78cae33fb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.61
+      value: 4.04
       objectReference: {fileID: 0}
     - target: {fileID: 3567103208892183594, guid: bc517b1e37e89417d97b46b78cae33fb, type: 3}
       propertyPath: m_LocalPosition.z
